@@ -1,2 +1,2 @@
 ### Overview
-This is tylertan's repository for "one student one chip program"
+This is tylertan's repository for "one student one chip" program.
