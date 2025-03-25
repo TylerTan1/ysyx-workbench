@@ -85,6 +85,11 @@ static bool make_token(char *e) {
 
   nr_token = 0;
 
+	for (int j = 0; j < 32; j++) {
+		tokens[j].type = 0;
+		memset(tokens[j].str, 0, 32);
+	}
+
   while (e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
@@ -110,8 +115,8 @@ static bool make_token(char *e) {
 					case TK_NUM:
 						tokens[nr_token].type = rules[i].token_type;
 						if (substr_len > 32) {
-							assert(0);
-							break;
+							printf("Exceed 32-bit width\n");
+							return false;
 						}
 						strncpy(tokens[nr_token].str, substr_start, substr_len);
 						nr_token++;
@@ -131,17 +136,31 @@ static bool make_token(char *e) {
     }
   }
 
-	for (int j = 0; j < nr_token; j++) {
-		if (tokens[j].type == TK_NUM)
-			Log("%s", tokens[j].str);
+	for (int k = 0; k < nr_token; k++) {
+		if (tokens[k].type == TK_NUM)
+			Log("%s", tokens[k].str);
 		else 
-			Log("%c", tokens[j].type); 
+			Log("%c", tokens[k].type); 
 	}
   return true;
 }
 
-uint32_t eval(int p, int q) {
-	return 0;
+uint32_t eval(int p, int q, bool *success) {
+	uint32_t result;
+	if (p > q)
+		assert(0);
+	else if (p == q) {
+		if (sscanf(tokens[p].str, "%u", &result) == 1)
+			return result;
+		else {
+			printf("Invalid expression!\n");
+			*success = false;
+			return 0;
+		}
+			
+	} else {
+		return 0;
+	}
 }
 
 word_t expr(char *e, bool *success) {
@@ -151,5 +170,5 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-	return eval(0, nr_token);
+	return eval(0, nr_token - 1, success);
 }

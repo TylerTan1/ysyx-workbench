@@ -110,8 +110,14 @@ static int cmd_x(char *args) {
 }
 
 static int cmd_p(char *args) {
+	if (args == NULL) {
+		printf("Usage: p EXPR\n");
+		return 0;
+	}
 	bool success = true;
-	expr(args, &success);
+	word_t result = expr(args, &success);
+	if (success)
+		printf("%d\n", result);
 	return 0;
 }
 
