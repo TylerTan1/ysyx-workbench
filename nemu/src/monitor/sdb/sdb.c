@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include <memory/vaddr.h>
 
 static int is_batch_mode = false;
 
@@ -66,6 +67,62 @@ static int cmd_si(char *args) {
 	return 0;
 }
 
+static void print_usage_info(void) {
+	printf("Usage: \"info r\" to print register\n       \"info w\" to print watchpoint\n"); 
+}
+
+static int cmd_info(char *args) {
+	if (args == NULL) {
+		print_usage_info();
+		return 0;
+	}
+	char *arg = strtok(args, " ");
+	if (strcmp(arg, "r") == 0) {
+		isa_reg_display();
+	} else if (strcmp(arg, "w") == 0) {
+		return 0;
+	} else print_usage_info();
+	return 0;	
+}
+
+static void print_usage_x(void) {
+	printf("Usage: x N address\n");
+}
+
+static int cmd_x(char *args) {
+	if (args == NULL) {
+		print_usage_x();
+		return 0;
+	}
+	unsigned int step_count;
+	uint32_t address;
+	uint32_t data;
+	if (sscanf(args, "%d %x", &step_count, &address) == 2) {
+		for (int i = 0; i < step_count; i++) {
+			data = vaddr_read(address + 4 * i, 4);
+			printf("0x%08x:     ", address + 4 * i);
+			printf("0x%08x\n", data);			
+		}
+	} else {
+		print_usage_x();
+	}
+	return 0;
+}
+
+static int cmd_p(char *args) {
+	bool success = true;
+	expr(args, &success);
+	return 0;
+}
+
+static int cmd_w(char *args) {
+	return 0;
+}
+
+static int cmd_d(char *args) {
+	return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -75,8 +132,11 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
 	{ "si", "Execute N steps instructions (default N = 1)", cmd_si },
-  /* TODO: Add more commands */
-
+	{ "info", "Print program status(register/watchpoint)", cmd_info },
+	{ "x", "Scan memory and outputs consecutive N 4 bytes in hexadecimal", cmd_x },
+	{ "p", "Evaluate expression", cmd_p },
+	{ "w", "Set watchpoint", cmd_w },
+	{ "d", "Delete a watchpoint", cmd_d },
 };
 
 #define NR_CMD ARRLEN(cmd_table)

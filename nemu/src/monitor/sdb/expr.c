@@ -21,8 +21,11 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,
-
+  TK_NOTYPE = 256, TK_NUM,
+	TK_EQ,
+	TK_PLUS = 43, TK_MINUS = 45,
+	TK_MULTIPLY = 42, TK_SLASH = 47,
+	TK_LPAREN = 40, TK_RPAREN = 41	
   /* TODO: Add more token types */
 
 };
@@ -35,15 +38,20 @@ static struct rule {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-
   {" +", TK_NOTYPE},    // spaces
-  {"\\+", '+'},         // plus
+	{"[0-9]+(\\.[0-9]+)?", TK_NUM},  //number
   {"==", TK_EQ},        // equal
+  {"\\+", TK_PLUS},         // plus
+	{"-", TK_MINUS},					// minus
+	{"\\*", TK_MULTIPLY},			// multiply
+	{"/", TK_SLASH}, 					// slash
+	{"\\(", TK_LPAREN},				// left parenthesis
+	{"\\)", TK_RPAREN}				// right parenthesis
 };
 
 #define NR_REGEX ARRLEN(rules)
 
-static regex_t re[NR_REGEX] = {};
+static regex_t re[NR_REGEX] = {};  //储存编译后的正则表达式
 
 /* Rules are used for many times.
  * Therefore we compile them only once before any usage.
@@ -54,8 +62,8 @@ void init_regex() {
   int ret;
 
   for (i = 0; i < NR_REGEX; i ++) {
-    ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
-    if (ret != 0) {
+    ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);    //储存正则表达式至re[]
+    if (ret != 0) {             //若正则表达式编译错误
       regerror(ret, &re[i], error_msg, 128);
       panic("regex compilation failed: %s\n%s", error_msg, rules[i].regex);
     }
@@ -71,18 +79,18 @@ static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
-  int position = 0;
+  int position = 0;  //指示当前位置
   int i;
-  regmatch_t pmatch;
+  regmatch_t pmatch;  //用于储存匹配结果
 
   nr_token = 0;
 
   while (e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
-      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
+      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {   // 成功识别并储存到pmatch里且是当前指向的位置
         char *substr_start = e + position;
-        int substr_len = pmatch.rm_eo;
+        int substr_len = pmatch.rm_eo;     
 
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
@@ -93,24 +101,48 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-
         switch (rules[i].token_type) {
-          default: TODO();
+					case TK_EQ: case TK_PLUS: case TK_MINUS: case TK_MULTIPLY: 
+					case TK_SLASH: case TK_LPAREN: case TK_RPAREN:
+						tokens[nr_token].type = rules[i].token_type;
+						nr_token++;
+					 	break;
+					case TK_NUM:
+						tokens[nr_token].type = rules[i].token_type;
+						if (substr_len > 32) {
+							assert(0);
+							break;
+						}
+						strncpy(tokens[nr_token].str, substr_start, substr_len);
+						nr_token++;
+						break;
+					case TK_NOTYPE:
+						break;
+          default:
+						assert(0);
+						break;
         }
-
         break;
       }
     }
-
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
       return false;
     }
   }
 
+	for (int j = 0; j < nr_token; j++) {
+		if (tokens[j].type == TK_NUM)
+			Log("%s", tokens[j].str);
+		else 
+			Log("%c", tokens[j].type); 
+	}
   return true;
 }
 
+uint32_t eval(int p, int q) {
+	return 0;
+}
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
@@ -119,7 +151,5 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+	return eval(0, nr_token);
 }
