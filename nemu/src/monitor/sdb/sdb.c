@@ -114,6 +114,10 @@ static int cmd_p(char *args) {
 		printf("Usage: p EXPR\n");
 		return 0;
 	}
+	if (strcmp(args, "test") == 0) {
+		printf("Testing...\n");
+		return 0;
+	}
 	bool success = true;
 	word_t result = expr(args, &success);
 	if (success)

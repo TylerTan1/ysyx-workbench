@@ -19,20 +19,63 @@
 #include <time.h>
 #include <assert.h>
 #include <string.h>
+#include <stdint.h>
 
 // this should be enough
 static char buf[65536] = {};
 static char code_buf[65536 + 128] = {}; // a little larger than `buf`
 static char *code_format =
 "#include <stdio.h>\n"
+"#include <stdint.h>\n"
 "int main() { "
-"  unsigned result = %s; "
+"  uint32_t result = %s; "
 "  printf(\"%%u\", result); "
 "  return 0; "
 "}";
 
-static void gen_rand_expr() {
-  buf[0] = '\0';
+static void gen_num() {
+	unsigned int num = rand() % 100 + 1;
+	char num_str[16];
+	snprintf(num_str, sizeof(num_str), "%d", num);
+	strcat(buf, num_str);
+}
+
+static void gen_rand_op() {
+	int op = rand() % 4;
+	const char *ops[] = {"+", "-", "*", "/"};
+	strcat(buf, ops[op]);
+}
+
+static void gen_space() { 
+	if (rand() % 3 == 0) 
+		strcat(buf, " ");
+}
+
+static void gen_rand_expr(int depth) {
+	if (depth == 0) {
+		gen_space();
+		gen_num();
+		return;
+	}
+	switch(rand() % 2) {
+		case 1:	
+			strcat(buf, "(");
+			gen_space();
+			gen_rand_expr(depth - 1); 
+			gen_space();
+			strcat(buf, ")"); 
+			break;
+		default:
+			gen_rand_expr(depth - 1); 
+			gen_space();
+			gen_rand_op(); 
+			if (buf[strlen(buf) - 1] == '/') {
+				gen_num();
+			} else {
+				gen_rand_expr(depth - 1); 
+			}
+			break;
+	}
 }
 
 int main(int argc, char *argv[]) {
@@ -42,9 +85,9 @@ int main(int argc, char *argv[]) {
   if (argc > 1) {
     sscanf(argv[1], "%d", &loop);
   }
-  int i;
-  for (i = 0; i < loop; i ++) {
-    gen_rand_expr();
+  for (int i = 0; i < loop; i ++) {
+		memset(buf, '\0', sizeof(buf));
+    gen_rand_expr(4);
 
     sprintf(code_buf, code_format, buf);
 
@@ -59,7 +102,7 @@ int main(int argc, char *argv[]) {
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
-    int result;
+    uint32_t result;
     ret = fscanf(fp, "%d", &result);
     pclose(fp);
 
