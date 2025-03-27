@@ -114,11 +114,20 @@ static int cmd_p(char *args) {
 		printf("Usage: p EXPR\n");
 		return 0;
 	}
-	if (strcmp(args, "test") == 0) {
-		printf("Testing...\n");
-		return 0;
-	}
+	char first[16] = {0};
+	int second;
 	bool success = true;
+	if (sscanf(args, "%s %d", first, &second) == 2) {
+		if (strcmp(first, "test") == 0) {
+			if (second >= 1000 || second <= 0) {
+				printf("Number of test expressions should be between 1 and 999.\n");
+				return 0;
+			}
+			printf("Testing...\n");
+			expr_test(second, &success);
+			return 0;
+		}
+	}
 	word_t result = expr(args, &success);
 	if (success)
 		printf("%d\n", result);

@@ -19,5 +19,6 @@
 #include <common.h>
 
 word_t expr(char *e, bool *success);
+void expr_test(int expr_count, bool *success);
 
 #endif

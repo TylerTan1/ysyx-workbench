@@ -22,12 +22,12 @@
 
 enum {
   TK_NOTYPE = 256, TK_NUM,
-	TK_EQ,
-	TK_PLUS = 43, TK_MINUS = 45,
-	TK_MULTIPLY = 42, TK_SLASH = 47,
-	TK_LPAREN = 40, TK_RPAREN = 41	
+	TK_EQ = 20,
+	TK_PLUS = 21, TK_MINUS = 22,
+	TK_MULTIPLY = 23, TK_SLASH = 24,
+	TK_LPAREN = 42, TK_RPAREN = 41,
   /* TODO: Add more token types */
-
+	TK_DEFER = 10
 };
 
 static struct rule {
@@ -92,13 +92,13 @@ static bool make_token(char *e) {
 
   while (e[position] != '\0') {
     /* Try all rules one by one. */
-    for (i = 0; i < NR_REGEX; i ++) {
+    for (i = 0; i < NR_REGEX; i++) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {   // 成功识别并储存到pmatch里且是当前指向的位置
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;     
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+         // Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+         //   i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
 
@@ -107,11 +107,18 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
         switch (rules[i].token_type) {
-					case TK_EQ: case TK_PLUS: case TK_MINUS: case TK_MULTIPLY: 
+					case TK_EQ: case TK_PLUS: case TK_MINUS:  
 					case TK_SLASH: case TK_LPAREN: case TK_RPAREN:
 						tokens[nr_token].type = rules[i].token_type;
 						nr_token++;
 					 	break;
+					case TK_MULTIPLY:
+						if (nr_token == 0 || (tokens[nr_token - 1].type != TK_NUM && tokens[nr_token - 1].type != TK_RPAREN))
+							tokens[nr_token].type = TK_DEFER;
+						else
+							tokens[nr_token].type = TK_MULTIPLY;
+						nr_token++;
+						break; 
 					case TK_NUM:
 						tokens[nr_token].type = rules[i].token_type;
 						if (substr_len > 32) {
@@ -127,7 +134,7 @@ static bool make_token(char *e) {
 						assert(0);
 						break;
         }
-        break;
+				break;
       }
     }
     if (i == NR_REGEX) {
@@ -135,18 +142,11 @@ static bool make_token(char *e) {
       return false;
     }
   }
-
-	for (int k = 0; k < nr_token; k++) {
-		if (tokens[k].type == TK_NUM)
-			Log("%s", tokens[k].str);
-		else 
-			Log("%c", tokens[k].type); 
-	}
   return true;
 }
 
 static bool check_parentheses(int p, int q, bool *success) {
-	int  count_paren = 0;
+	int count_paren = 0;
 	if (tokens[p].type == TK_LPAREN && tokens[q].type == TK_RPAREN) {
 		for (int i = p + 1; i < q; i++) {
 			if (tokens[i].type == TK_LPAREN)
@@ -157,10 +157,10 @@ static bool check_parentheses(int p, int q, bool *success) {
 				success = false;
 				return false;
 			}
-			if (count_paren != 0) {
-				success = false;
-				return false;
-			}
+		}
+		if (count_paren != 0) {
+			success = false;
+			return false;
 		}
 		return true;
 	} else 
@@ -173,6 +173,8 @@ static int prio(int op) {
 			return 0;
 		case TK_MULTIPLY: case TK_SLASH:
 			return 1;
+		case TK_DEFER:
+			return 2;
 		default: 
 			assert(0);
 	}
@@ -191,7 +193,7 @@ static int find_mainop(int p, int q, bool *success) {
 			continue;
 		for (int j = 3; j <= 6; j++) {
 			if (rules[j].token_type == tokens[i].type) {
-				if (mainop_prio == 0 || prio(rules[j].token_type) < prio(rules[mainop_prio].token_type)) { 
+				if (mainop_prio == 0 || prio(rules[j].token_type) <= prio(rules[mainop_prio].token_type)) { 
 					mainop_position = i;
 					mainop_prio = j;
 				}
@@ -226,28 +228,47 @@ static uint32_t eval(int p, int q, bool *success) {
 				printf("Invalid expression!\n");
 				return 0;
 			}
-			uint32_t val1 = eval(p, op - 1, success);
-			if (!success) {
-				printf("Invalid expression!\n");
-				return 0;
-			}
-			uint32_t val2 = eval(op + 1, q, success);
-			if (!success) {
-				printf("Invalid expression!\n");
-				return 0;
-			}
-
-			switch (tokens[op].type) {
-				case TK_PLUS:     return val1 + val2;
-				case TK_MINUS:    return val1 - val2;
-				case TK_MULTIPLY: return val1 * val2;
-				case TK_SLASH:		return val1 / val2;
-				default:					assert(0);
-			}
+			if (tokens[op].type > 19 && tokens[op].type < 30) {
+				uint32_t val1 = eval(p, op - 1, success);
+				if (!success) {
+					printf("Invalid expression!\n");
+					return 0;
+				}
+				uint32_t val2 = eval(op + 1, q, success);
+				if (!success) {
+					printf("Invalid expression!\n");
+					return 0;
+				}
+				switch (tokens[op].type) {
+					case TK_PLUS:     return val1 + val2;
+					case TK_MINUS:    return val1 - val2;
+					case TK_MULTIPLY: return val1 * val2;
+					case TK_SLASH:		return val1 / val2;
+					default:					assert(0);
+				}
+			} else if (tokens[op].type > 9 && tokens[op].type < 20) {
+				uintptr_t val = (uintptr_t)eval(op + 1, q, success);
+				if (!success) {
+					printf("Invalid expression!\n");
+					return 0;
+				}
+				switch (tokens[op].type) {
+					case TK_DEFER:   
+						if (val >= 0x80000000 && val < 0x8fffffff)
+							return  *(uint32_t *)val;
+						else {
+							printf("Cannot access the address\n");
+							success = false;
+							return 0;
+						}
+					default:	assert(0);
+				}
+			} else 
+				assert(0);
 	}
 }
 
-word_t expr(char *e, bool *success) {
+uint32_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
     return 0;
@@ -255,4 +276,38 @@ word_t expr(char *e, bool *success) {
 
   /* TODO: Insert codes to evaluate the expression. */
 	return eval(0, nr_token - 1, success);
+}
+
+void expr_test(int expr_count, bool *success) {
+	FILE *fp = fopen("/home/tylertan/ysyx-workbench/nemu/tools/gen-expr/input.txt", "r");
+	assert(fp != NULL);
+	char buffer[128+16];
+	uint32_t origin_result;
+	char expression[128];
+	uint32_t result;
+	int count_success = 0;
+	
+	for (int i = 0; i < expr_count; i++) { 
+		memset(buffer, '\0', sizeof(buffer));
+		memset(expression, '\0', sizeof(expression));
+
+		assert(fgets(buffer, sizeof(buffer), fp) != NULL);
+		if (sscanf(buffer, "%u %[^\n]", &origin_result, expression) != 2) {
+			printf("Failed to parse line\n");
+			assert(0);
+		}
+		result = expr(expression, success);
+		if (!success) {
+			printf("Something wrong during calculating\n");
+			assert(0);
+		}
+		if (origin_result == result) {
+			printf("Succeed in %s = %u\n", expression, result);
+			count_success++;
+		} else {
+			printf("FAILED IN %s = %u\n", expression, result);
+		}
+	}
+	fclose(fp);
+	printf("Total tests: %d\nSuccess tests: %d\n", expr_count, count_success);
 }
