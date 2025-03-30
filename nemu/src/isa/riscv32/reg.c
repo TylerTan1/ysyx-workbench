@@ -28,6 +28,10 @@ void isa_reg_display() {
 		printf("%-8s 0x%08x %10u\n", regs[i], gpr(i), gpr(i)); 
 }
 
-word_t isa_reg_str2val(const char *s, bool *success) {
-  return 0;
+uint32_t isa_reg_str2val(const char *s) {
+	for (int i = 0; i < 32; i++)
+		if (strcmp(s, regs[i]) == 0) 
+			return gpr(i);
+  printf("Invalid reg!\n");
+	return 0;
 }

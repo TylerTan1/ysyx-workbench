@@ -128,9 +128,9 @@ static int cmd_p(char *args) {
 			return 0;
 		}
 	}
-	word_t result = expr(args, &success);
+	uint32_t result = expr(args, &success);
 	if (success)
-		printf("%d\n", result);
+		printf("%u\n", result);
 	return 0;
 }
 
