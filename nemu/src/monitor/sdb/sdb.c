@@ -80,7 +80,7 @@ static int cmd_info(char *args) {
 	if (strcmp(arg, "r") == 0) {
 		isa_reg_display();
 	} else if (strcmp(arg, "w") == 0) {
-		return 0;
+		display_wp();
 	} else print_usage_info();
 	return 0;	
 }
@@ -131,14 +131,29 @@ static int cmd_p(char *args) {
 	uint32_t result = expr(args, &success);
 	if (success)
 		printf("%u\n", result);
+	else
+		printf("The expression is not valid!\n");
 	return 0;
 }
 
 static int cmd_w(char *args) {
+	bool success = true;
+	new_wp(args, &success);
+	if (!success) printf("The expression is not valid!\n");
 	return 0;
 }
 
 static int cmd_d(char *args) {
+	if (args == NULL) {
+		printf("Usage: d all / d number\n");
+		return 0;
+	}
+	if (strcmp(args, "all") == 0) {
+		init_wp_pool();
+		printf("Successfully delete all the watchpoints\n");
+	} else {
+		free_wp(atoi(args));
+	}
 	return 0;
 }
 

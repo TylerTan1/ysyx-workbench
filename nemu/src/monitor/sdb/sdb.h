@@ -18,7 +18,9 @@
 
 #include <common.h>
 
-word_t expr(char *e, bool *success);
+uint32_t expr(char *e, bool *success);
 void expr_test(int expr_count, bool *success);
-
+void new_wp(char *argc, bool *success);
+void display_wp();
+void free_wp(int no);
 #endif
