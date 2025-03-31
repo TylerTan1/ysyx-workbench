@@ -54,8 +54,6 @@ static int cmd_q(char *args) {
   return -1;
 }
 
-static int cmd_help(char *args);
-
 static int cmd_si(char *args) {
 	int step_count = 1;
 	if (args != NULL) 
@@ -156,6 +154,8 @@ static int cmd_d(char *args) {
 	}
 	return 0;
 }
+
+static int cmd_help(char *args);
 
 static struct {
   const char *name;
