@@ -1,0 +1,22 @@
+`define INST_TYPE_R  0110011
+
+`define INST_TYPE_I1 0000011
+
+`define INST_TYPE_I2 0010011
+	`define INST_ADDI 000
+
+`define INST_TYPE_I3 1100111
+
+`define INST_TYPE_S  0100011
+
+`define INST_TYPE_B  1100011
+
+`define INST_TYPE_U1 0010111
+
+`define INST_TYPE U2 0110111
+
+`define INST_TYPE_J  1101111
+
+
+
+
