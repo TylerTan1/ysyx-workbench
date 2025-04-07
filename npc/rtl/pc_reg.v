@@ -1,13 +1,12 @@
-module pc_reg(
+module pc_reg (
 	input wire clk,
-	input wire rst_n,
+	input wire rst,
 	// to ifetch
-	output reg[31:0] pc
+	output reg[31:0] pc_o
 );
-	always @(posedge clk) begin
-		if (!rst_n) 
-			pc <= 32'h80000000;
-	  else 
-			pc <= pc + 32'd4;
+
+	always @(posedge clk or posedge rst) begin
+		if (rst) pc_o <= 32'h80000000;
+		else pc_o <= pc_o + 4;
 	end
 endmodule
