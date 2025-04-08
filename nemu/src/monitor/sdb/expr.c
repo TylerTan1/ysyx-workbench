@@ -38,7 +38,7 @@ static struct rule {
    */
   {" +", TK_NOTYPE},    // spaces
 	{"[0x[0-9a-fA-F]+|[0-9]+", TK_NUM},  //number
-	{"\\$[\\$a-z][a-z0-9][01]?", TK_REG},						// reg
+	{"\\$/home/tylertan/ysyx-workbench/nemu/tools/gen-expr/test.txt[\\$a-z][a-z0-9][01]?", TK_REG},						// reg
 	{"\\(", TK_LPAREN},       // left parenthesis                                                                                                   
   {"\\)", TK_RPAREN},       // right parenthesi
 	{"!=", TK_INEQ},					// inequal
@@ -224,7 +224,7 @@ static int prio(int op) {
 			return 9;
 		case TK_DEFER: case TK_BNOT: case TK_LNOT:
 			return 10;
-		default: 
+		default:
 			assert(0);
 	}
 }
@@ -247,7 +247,7 @@ static int find_mainop(int p, int q, bool *success) {
 			}
 			continue;
 		}
-		for (int j = 5; j <= NR_REGEX; j++) {
+		for (int j = 5; j < NR_REGEX; j++) {
 			if (rules[j].token_type == tokens[i].type) {
 				if (mainop_prio == 0 || prio(rules[j].token_type) <= prio(rules[mainop_prio].token_type)) { 
 					mainop_position = i;
@@ -352,7 +352,7 @@ uint32_t expr(char *e, bool *success) {
 }
 
 void expr_test(int expr_count, bool *success) {
-	FILE *fp = fopen("/home/tylertan/ysyx-workbench/nemu/tools/gen-expr/input.txt", "r");
+	FILE *fp = fopen("/home/tylertan/ysyx-workbench/nemu/tools/gen-expr/test.txt", "r");
 	assert(fp != NULL);
 	char buffer[128+16];
 	uint32_t origin_result;
