@@ -1,8 +1,7 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Model implementation (design independent parts)
 
-#include "Vriscv.h"
-#include "Vriscv__Syms.h"
+#include "Vriscv__pch.h"
 #include "verilated_fst_c.h"
 
 //============================================================
@@ -59,13 +58,9 @@ void Vriscv::eval_step() {
         Vriscv___024root___eval_initial(&(vlSymsp->TOP));
         Vriscv___024root___eval_settle(&(vlSymsp->TOP));
     }
-    // MTask 0 start
-    VL_DEBUG_IF(VL_DBG_MSGF("MTask0 starting\n"););
-    Verilated::mtaskId(0);
     VL_DEBUG_IF(VL_DBG_MSGF("+ Eval\n"););
     Vriscv___024root___eval(&(vlSymsp->TOP));
     // Evaluate cleanup
-    Verilated::endOfThreadMTask(vlSymsp->__Vm_evalMsgQp);
     Verilated::endOfEval(vlSymsp->__Vm_evalMsgQp);
 }
 
@@ -100,12 +95,18 @@ VL_ATTR_COLD void Vriscv::final() {
 const char* Vriscv::hierName() const { return vlSymsp->name(); }
 const char* Vriscv::modelName() const { return "Vriscv"; }
 unsigned Vriscv::threads() const { return 1; }
+void Vriscv::prepareClone() const { contextp()->prepareClone(); }
+void Vriscv::atClone() const {
+    contextp()->threadPoolpOnClone();
+}
 std::unique_ptr<VerilatedTraceConfig> Vriscv::traceConfig() const {
     return std::unique_ptr<VerilatedTraceConfig>{new VerilatedTraceConfig{false, false, false}};
 };
 
 //============================================================
 // Trace configuration
+
+void Vriscv___024root__trace_decl_types(VerilatedFst* tracep);
 
 void Vriscv___024root__trace_init_top(Vriscv___024root* vlSelf, VerilatedFst* tracep);
 
@@ -118,11 +119,10 @@ VL_ATTR_COLD static void trace_init(void* voidSelf, VerilatedFst* tracep, uint32
             "Turning on wave traces requires Verilated::traceEverOn(true) call before time 0.");
     }
     vlSymsp->__Vm_baseCode = code;
-    tracep->scopeEscape(' ');
-    tracep->pushNamePrefix(std::string{vlSymsp->name()} + ' ');
+    tracep->pushPrefix(std::string{vlSymsp->name()}, VerilatedTracePrefixType::SCOPE_MODULE);
+    Vriscv___024root__trace_decl_types(tracep);
     Vriscv___024root__trace_init_top(vlSelf, tracep);
-    tracep->popNamePrefix();
-    tracep->scopeEscape('.');
+    tracep->popPrefix();
 }
 
 VL_ATTR_COLD void Vriscv___024root__trace_register(Vriscv___024root* vlSelf, VerilatedFst* tracep);

@@ -2,8 +2,7 @@
 // DESCRIPTION: Verilator output: Design implementation internals
 // See Vriscv.h for the primary calling header
 
-#include "verilated.h"
-
+#include "Vriscv__pch.h"
 #include "Vriscv__Syms.h"
 #include "Vriscv___024root.h"
 

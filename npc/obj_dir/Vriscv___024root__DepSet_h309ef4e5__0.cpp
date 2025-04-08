@@ -2,8 +2,7 @@
 // DESCRIPTION: Verilator output: Design implementation internals
 // See Vriscv.h for the primary calling header
 
-#include "verilated.h"
-
+#include "Vriscv__pch.h"
 #include "Vriscv___024root.h"
 
 VL_INLINE_OPT void Vriscv___024root___ico_sequent__TOP__0(Vriscv___024root* vlSelf) {
@@ -312,10 +311,27 @@ void Vriscv___024root___eval_ico(Vriscv___024root* vlSelf) {
     Vriscv__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vriscv___024root___eval_ico\n"); );
     // Body
-    if (vlSelf->__VicoTriggered.at(0U)) {
+    if ((1ULL & vlSelf->__VicoTriggered.word(0U))) {
         Vriscv___024root___ico_sequent__TOP__0(vlSelf);
         vlSelf->__Vm_traceActivity[1U] = 1U;
     }
+}
+
+void Vriscv___024root___eval_triggers__ico(Vriscv___024root* vlSelf);
+
+bool Vriscv___024root___eval_phase__ico(Vriscv___024root* vlSelf) {
+    if (false && vlSelf) {}  // Prevent unused
+    Vriscv__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vriscv___024root___eval_phase__ico\n"); );
+    // Init
+    CData/*0:0*/ __VicoExecute;
+    // Body
+    Vriscv___024root___eval_triggers__ico(vlSelf);
+    __VicoExecute = vlSelf->__VicoTriggered.any();
+    if (__VicoExecute) {
+        Vriscv___024root___eval_ico(vlSelf);
+    }
+    return (__VicoExecute);
 }
 
 void Vriscv___024root___eval_act(Vriscv___024root* vlSelf) {
@@ -348,12 +364,12 @@ VL_INLINE_OPT void Vriscv___024root___nba_sequent__TOP__0(Vriscv___024root* vlSe
         vlSelf->pc = ((IData)(4U) + vlSelf->pc);
         if (((IData)(vlSelf->riscv__DOT__ctrl_unit1__DOT____Vcellout__mux_op__out) 
              & (0U != (0x1fU & (vlSelf->inst >> 7U))))) {
-            vlSelf->riscv__DOT__regs1__DOT____Vlvbound_h6bef85a0__0 
+            vlSelf->riscv__DOT__regs1__DOT____Vlvbound_h966ba230__0 
                 = vlSelf->riscv__DOT__rd_data;
             if ((0x1eU >= (0x1fU & ((vlSelf->inst >> 7U) 
                                     - (IData)(1U))))) {
                 __Vdlyvval__riscv__DOT__regs1__DOT__regs__v31 
-                    = vlSelf->riscv__DOT__regs1__DOT____Vlvbound_h6bef85a0__0;
+                    = vlSelf->riscv__DOT__regs1__DOT____Vlvbound_h966ba230__0;
                 __Vdlyvset__riscv__DOT__regs1__DOT__regs__v31 = 1U;
                 __Vdlyvdim0__riscv__DOT__regs1__DOT__regs__v31 
                     = (0x1fU & ((vlSelf->inst >> 7U) 
@@ -511,23 +527,56 @@ void Vriscv___024root___eval_nba(Vriscv___024root* vlSelf) {
     Vriscv__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vriscv___024root___eval_nba\n"); );
     // Body
-    if (vlSelf->__VnbaTriggered.at(0U)) {
+    if ((1ULL & vlSelf->__VnbaTriggered.word(0U))) {
         Vriscv___024root___nba_sequent__TOP__0(vlSelf);
         vlSelf->__Vm_traceActivity[2U] = 1U;
         Vriscv___024root___nba_sequent__TOP__1(vlSelf);
     }
 }
 
-void Vriscv___024root___eval_triggers__ico(Vriscv___024root* vlSelf);
+void Vriscv___024root___eval_triggers__act(Vriscv___024root* vlSelf);
+
+bool Vriscv___024root___eval_phase__act(Vriscv___024root* vlSelf) {
+    if (false && vlSelf) {}  // Prevent unused
+    Vriscv__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vriscv___024root___eval_phase__act\n"); );
+    // Init
+    VlTriggerVec<1> __VpreTriggered;
+    CData/*0:0*/ __VactExecute;
+    // Body
+    Vriscv___024root___eval_triggers__act(vlSelf);
+    __VactExecute = vlSelf->__VactTriggered.any();
+    if (__VactExecute) {
+        __VpreTriggered.andNot(vlSelf->__VactTriggered, vlSelf->__VnbaTriggered);
+        vlSelf->__VnbaTriggered.thisOr(vlSelf->__VactTriggered);
+        Vriscv___024root___eval_act(vlSelf);
+    }
+    return (__VactExecute);
+}
+
+bool Vriscv___024root___eval_phase__nba(Vriscv___024root* vlSelf) {
+    if (false && vlSelf) {}  // Prevent unused
+    Vriscv__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vriscv___024root___eval_phase__nba\n"); );
+    // Init
+    CData/*0:0*/ __VnbaExecute;
+    // Body
+    __VnbaExecute = vlSelf->__VnbaTriggered.any();
+    if (__VnbaExecute) {
+        Vriscv___024root___eval_nba(vlSelf);
+        vlSelf->__VnbaTriggered.clear();
+    }
+    return (__VnbaExecute);
+}
+
 #ifdef VL_DEBUG
 VL_ATTR_COLD void Vriscv___024root___dump_triggers__ico(Vriscv___024root* vlSelf);
 #endif  // VL_DEBUG
-void Vriscv___024root___eval_triggers__act(Vriscv___024root* vlSelf);
-#ifdef VL_DEBUG
-VL_ATTR_COLD void Vriscv___024root___dump_triggers__act(Vriscv___024root* vlSelf);
-#endif  // VL_DEBUG
 #ifdef VL_DEBUG
 VL_ATTR_COLD void Vriscv___024root___dump_triggers__nba(Vriscv___024root* vlSelf);
+#endif  // VL_DEBUG
+#ifdef VL_DEBUG
+VL_ATTR_COLD void Vriscv___024root___dump_triggers__act(Vriscv___024root* vlSelf);
 #endif  // VL_DEBUG
 
 void Vriscv___024root___eval(Vriscv___024root* vlSelf) {
@@ -535,64 +584,57 @@ void Vriscv___024root___eval(Vriscv___024root* vlSelf) {
     Vriscv__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vriscv___024root___eval\n"); );
     // Init
+    IData/*31:0*/ __VicoIterCount;
     CData/*0:0*/ __VicoContinue;
-    VlTriggerVec<1> __VpreTriggered;
     IData/*31:0*/ __VnbaIterCount;
     CData/*0:0*/ __VnbaContinue;
     // Body
-    vlSelf->__VicoIterCount = 0U;
+    __VicoIterCount = 0U;
+    vlSelf->__VicoFirstIteration = 1U;
     __VicoContinue = 1U;
     while (__VicoContinue) {
-        __VicoContinue = 0U;
-        Vriscv___024root___eval_triggers__ico(vlSelf);
-        if (vlSelf->__VicoTriggered.any()) {
-            __VicoContinue = 1U;
-            if (VL_UNLIKELY((0x64U < vlSelf->__VicoIterCount))) {
+        if (VL_UNLIKELY((0x64U < __VicoIterCount))) {
 #ifdef VL_DEBUG
-                Vriscv___024root___dump_triggers__ico(vlSelf);
+            Vriscv___024root___dump_triggers__ico(vlSelf);
 #endif
-                VL_FATAL_MT("rtl/riscv.v", 1, "", "Input combinational region did not converge.");
-            }
-            vlSelf->__VicoIterCount = ((IData)(1U) 
-                                       + vlSelf->__VicoIterCount);
-            Vriscv___024root___eval_ico(vlSelf);
+            VL_FATAL_MT("rtl/riscv.v", 1, "", "Input combinational region did not converge.");
         }
+        __VicoIterCount = ((IData)(1U) + __VicoIterCount);
+        __VicoContinue = 0U;
+        if (Vriscv___024root___eval_phase__ico(vlSelf)) {
+            __VicoContinue = 1U;
+        }
+        vlSelf->__VicoFirstIteration = 0U;
     }
     __VnbaIterCount = 0U;
     __VnbaContinue = 1U;
     while (__VnbaContinue) {
+        if (VL_UNLIKELY((0x64U < __VnbaIterCount))) {
+#ifdef VL_DEBUG
+            Vriscv___024root___dump_triggers__nba(vlSelf);
+#endif
+            VL_FATAL_MT("rtl/riscv.v", 1, "", "NBA region did not converge.");
+        }
+        __VnbaIterCount = ((IData)(1U) + __VnbaIterCount);
         __VnbaContinue = 0U;
-        vlSelf->__VnbaTriggered.clear();
         vlSelf->__VactIterCount = 0U;
         vlSelf->__VactContinue = 1U;
         while (vlSelf->__VactContinue) {
-            vlSelf->__VactContinue = 0U;
-            Vriscv___024root___eval_triggers__act(vlSelf);
-            if (vlSelf->__VactTriggered.any()) {
-                vlSelf->__VactContinue = 1U;
-                if (VL_UNLIKELY((0x64U < vlSelf->__VactIterCount))) {
+            if (VL_UNLIKELY((0x64U < vlSelf->__VactIterCount))) {
 #ifdef VL_DEBUG
-                    Vriscv___024root___dump_triggers__act(vlSelf);
+                Vriscv___024root___dump_triggers__act(vlSelf);
 #endif
-                    VL_FATAL_MT("rtl/riscv.v", 1, "", "Active region did not converge.");
-                }
-                vlSelf->__VactIterCount = ((IData)(1U) 
-                                           + vlSelf->__VactIterCount);
-                __VpreTriggered.andNot(vlSelf->__VactTriggered, vlSelf->__VnbaTriggered);
-                vlSelf->__VnbaTriggered.set(vlSelf->__VactTriggered);
-                Vriscv___024root___eval_act(vlSelf);
+                VL_FATAL_MT("rtl/riscv.v", 1, "", "Active region did not converge.");
+            }
+            vlSelf->__VactIterCount = ((IData)(1U) 
+                                       + vlSelf->__VactIterCount);
+            vlSelf->__VactContinue = 0U;
+            if (Vriscv___024root___eval_phase__act(vlSelf)) {
+                vlSelf->__VactContinue = 1U;
             }
         }
-        if (vlSelf->__VnbaTriggered.any()) {
+        if (Vriscv___024root___eval_phase__nba(vlSelf)) {
             __VnbaContinue = 1U;
-            if (VL_UNLIKELY((0x64U < __VnbaIterCount))) {
-#ifdef VL_DEBUG
-                Vriscv___024root___dump_triggers__nba(vlSelf);
-#endif
-                VL_FATAL_MT("rtl/riscv.v", 1, "", "NBA region did not converge.");
-            }
-            __VnbaIterCount = ((IData)(1U) + __VnbaIterCount);
-            Vriscv___024root___eval_nba(vlSelf);
         }
     }
 }

@@ -7,9 +7,10 @@
 
 #include "verilated.h"
 
+
 class Vriscv__Syms;
 
-class Vriscv___024root final : public VerilatedModule {
+class alignas(VL_CACHE_LINE_BYTES) Vriscv___024root final : public VerilatedModule {
   public:
 
     // DESIGN SPECIFIC STATE
@@ -21,8 +22,10 @@ class Vriscv___024root final : public VerilatedModule {
     CData/*0:0*/ riscv__DOT__extend1__DOT__mux_extend__DOT__i0__DOT__hit;
     CData/*0:0*/ riscv__DOT__mux_srcb1__DOT__mux_srcb__DOT__i0__DOT__hit;
     CData/*0:0*/ riscv__DOT__alu1__DOT__mux_result__DOT__i0__DOT__hit;
-    CData/*0:0*/ __Vtrigrprev__TOP__clk;
-    CData/*0:0*/ __Vtrigrprev__TOP__rst;
+    CData/*0:0*/ __VstlFirstIteration;
+    CData/*0:0*/ __VicoFirstIteration;
+    CData/*0:0*/ __Vtrigprevexpr___TOP__clk__0;
+    CData/*0:0*/ __Vtrigprevexpr___TOP__rst__0;
     CData/*0:0*/ __VactContinue;
     SData/*10:0*/ riscv__DOT__ctrl_unit1__DOT____Vcellinp__mux_op__key;
     VL_OUT(pc,31,0);
@@ -33,14 +36,12 @@ class Vriscv___024root final : public VerilatedModule {
     IData/*31:0*/ riscv__DOT__imm;
     IData/*31:0*/ riscv__DOT__srcb_data;
     IData/*31:0*/ riscv__DOT__regs1__DOT__i;
-    IData/*31:0*/ riscv__DOT__regs1__DOT____Vlvbound_h6bef85a0__0;
+    IData/*31:0*/ riscv__DOT__regs1__DOT____Vlvbound_h966ba230__0;
     IData/*31:0*/ riscv__DOT__extend1__DOT__mux_extend__DOT__i0__DOT__lut_out;
     IData/*31:0*/ riscv__DOT__mux_srcb1__DOT__mux_srcb__DOT__i0__DOT__lut_out;
     IData/*31:0*/ riscv__DOT__alu1__DOT__srcb;
     IData/*31:0*/ riscv__DOT__alu1__DOT__result_add_sub;
     IData/*31:0*/ riscv__DOT__alu1__DOT__mux_result__DOT__i0__DOT__lut_out;
-    IData/*31:0*/ __VstlIterCount;
-    IData/*31:0*/ __VicoIterCount;
     IData/*31:0*/ __VactIterCount;
     VlUnpacked<IData/*31:0*/, 31> riscv__DOT__regs1__DOT__regs;
     VlUnpacked<IData/*17:0*/, 2> riscv__DOT__ctrl_unit1__DOT__mux_op__DOT__i0__DOT__pair_list;
@@ -71,7 +72,7 @@ class Vriscv___024root final : public VerilatedModule {
 
     // INTERNAL METHODS
     void __Vconfigure(bool first);
-} VL_ATTR_ALIGNED(VL_CACHE_LINE_BYTES);
+};
 
 
 #endif  // guard

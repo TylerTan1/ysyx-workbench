@@ -1,7 +1,7 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vriscv__Syms.h"
+#include "Vriscv__pch.h"
 #include "Vriscv.h"
 #include "Vriscv___024root.h"
 

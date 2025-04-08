@@ -9,3 +9,4 @@
 #include "Vriscv___024root__DepSet_h309ef4e5__0__Slow.cpp"
 #include "Vriscv__Syms.cpp"
 #include "Vriscv__Trace__0__Slow.cpp"
+#include "Vriscv__TraceDecls__0__Slow.cpp"

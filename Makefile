@@ -1,4 +1,4 @@
-STUID = ysyx_22040000
+STUID = ysyx_25040101
 STUNAME = Tan Tianle
 
 # DO NOT modify the following code!!!
