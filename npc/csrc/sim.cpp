@@ -1,4 +1,4 @@
-#include "Vriscv.h"
+#include "Vysyx_25040101_riscv.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
 
@@ -7,15 +7,15 @@ const uint32_t inst[] = {
 	0x00408093, // addi x1, x1, 4
 	0x00108213, // addi x4, x1, 4
 	0x00408093,	// addi x1, x1, 4
-	0x00000013	// NOP
-	// 0b00000000000100000000000001110011	// ebreak
+	0x00000013,	// NOP
+	0x00100073	// ebreak
 };
 
-Vriscv* dut;    // top
+Vysyx_25040101_riscv* dut;   // top
 uint32_t* rom;							 // memory
 VerilatedFstC *m_trace;			 // wave trace										
 VerilatedContext *contextp;  //	sim environment 
-
+bool trap = false;				 // trap
 
 uint32_t* init_mem(size_t size) {
 	rom = new uint32_t[size];
@@ -43,10 +43,8 @@ void reset (void) {
 	dut->rst = 0;
 	dut->clk = 0;
 	dut->inst = 0x00000013; // NOP
-	// printf("1\n");
 	exe_once();
 	dut->rst = 1;
-	// printf("2\n");
 	exe_once();
 	dut->rst = 0;
 }
@@ -60,9 +58,13 @@ uint32_t pmem_read(uint32_t* memory, uint32_t vaddr) {
 	return rom[paddr / 4];
 }
 
+extern "C" void ebreak() {
+	trap = true;
+}
+
 int main() {
-	dut = new Vriscv;
-	init_mem(5);
+	dut = new Vysyx_25040101_riscv;
+	init_mem(6);
 
 	Verilated::traceEverOn(true);
 	contextp = new VerilatedContext;
@@ -72,12 +74,12 @@ int main() {
 
 	reset();
 
-	for (int i = 0; i < 5; i++) {
+	while (!trap) {
 		dut->inst = pmem_read(rom, dut->pc);
-		// printf("%d\n", i + 3);
 		exe_once();
 	}
 	
+	printf("Trap in %x\n", dut->pc);
 	m_trace->close();
 	delete dut;
 	delete m_trace;

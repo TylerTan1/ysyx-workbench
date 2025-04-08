@@ -1,4 +1,4 @@
-module extend(
+module ysyx_25040101_extend(
 	// from rom
 	input  wire[31:7] inst_i,
 	// from ctrl_unit

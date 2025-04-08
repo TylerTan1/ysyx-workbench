@@ -1,4 +1,4 @@
-module mux_srcb(
+module ysyx_25040101_mux_srcb(
 	// from ctrl_unit
 	input wire alu_src_i,
 	// from regs

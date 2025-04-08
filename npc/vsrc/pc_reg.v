@@ -1,4 +1,4 @@
-module pc_reg (
+module ysyx_25040101_pc_reg (
 	input wire clk,
 	input wire rst,
 	// to ifetch

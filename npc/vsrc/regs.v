@@ -1,4 +1,4 @@
-module regs (
+module ysyx_25040101_regs (
   input wire clk,
 	input wire rst,
 	// from exe

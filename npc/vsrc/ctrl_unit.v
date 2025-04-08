@@ -1,4 +1,5 @@
-module ctrl_unit(
+module ysyx_25040101_ctrl_unit(
+
 	input wire[6:0] opcode_i,
 	input wire[2:0] func3_i,
 	input wire		  func7_i,
@@ -21,4 +22,11 @@ module ctrl_unit(
 			11'b0010011_000_1, 7'b00_1_001_1
 		})
 	);
+
+	import "DPI-C" function void ebreak();
+	always @(*) begin
+		if (opcode_i == 7'b1110011 && func3_i == 3'b000 && func7_i == 1'b0) begin
+			ebreak();
+		end
+	end
 endmodule

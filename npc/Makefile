@@ -1,21 +1,24 @@
 VERILATOR_FLASS = --cc --exe --build --trace-fst
 
 # dir to all verilog file
-RTL_DIR = rtl
-TEMPLATES_DIR = $(RTL_DIR)/templates
+VERILOG_DIR = vsrc
+TEMPLATES_DIR = $(VERILOG_DIR)/templates
 
 # all verilog file
-VERILOG_SRCS = $(wildcard $(RTL_DIR)/*.v) $(wildcard $(TEMPLATES_DIR)/*.v)
+VERILOG_SRCS = $(wildcard $(VERILOG_DIR)/*.v) $(wildcard $(TEMPLATES_DIR)/*.v)
 
-# test cpp file
-TEST_CPP = sim.cpp
+# dir to all cpp file
+CPP_DIR = csrc
+
+# all cpp file
+CPP_SRCS = $(wildcard $(CPP_DIR)/*.cpp)
 
 # top module
-TOP_MODULE = riscv
+TOP_MODULE = ysyx_25040101_riscv
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator $(VERILATOR_FLASS) $(VERILOG_SRCS) $(TEST_CPP) --top-module $(TOP_MODULE)
+	verilator $(VERILATOR_FLASS) $(VERILOG_SRCS) $(CPP_SRCS) --top-module $(TOP_MODULE)
 
 wave:
 	obj_dir/V$(TOP_MODULE)

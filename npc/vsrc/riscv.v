@@ -1,4 +1,4 @@
-module riscv(
+module ysyx_25040101_riscv(
 	input wire clk,
 	input wire rst,
 	// to rom
@@ -17,13 +17,13 @@ module riscv(
 	wire[31:0] srcb_data;
 
 
-	pc_reg pc_reg1(
+	ysyx_25040101_pc_reg pc_reg1(
 		.clk(clk),
 	 	.rst(rst),
 		.pc_o(pc)
 	);
 	
-	regs regs1(
+	ysyx_25040101_regs regs1(
 		.clk(clk),
 		.rst(rst),
 		.rd_data_i(rd_data),
@@ -35,7 +35,7 @@ module riscv(
 		.rs2_data_o(rs2_data)
 	);
 
-	ctrl_unit ctrl_unit1(
+	ysyx_25040101_ctrl_unit ctrl_unit1(
 		.opcode_i(inst[6:0]),
 		.func3_i(inst[14:12]),
 		.func7_i(inst[30]),
@@ -45,20 +45,20 @@ module riscv(
 		.rd_wen_o(rd_wen)
 	);
 
-	extend extend1(
+	ysyx_25040101_extend extend1(
 		.inst_i(inst[31:7]),
 		.imm_src_i(imm_src),
 		.imm_o(imm)
 	);
 
-	mux_srcb mux_srcb1(
+	ysyx_25040101_mux_srcb mux_srcb1(
 		.alu_src_i(alu_src),
 		.rs2_data_i(rs2_data),
 		.imm_i(imm),
 		.srcb_data_o(srcb_data)
 	);	
 
-	alu alu1(
+	ysyx_25040101_alu alu1(
 		.srca_data_i(rs1_data),
 		.srcb_data_i(srcb_data),
 		.alu_ctrl_i(alu_ctrl),

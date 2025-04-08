@@ -1,4 +1,4 @@
-module alu(
+module ysyx_25040101_alu(
 	// from regs
 	input wire[31:0] srca_data_i,
 	// from mux_srcb
