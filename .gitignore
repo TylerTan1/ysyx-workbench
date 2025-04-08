@@ -10,7 +10,7 @@
 !README.md
 !.gitignore
 !init.sh
-!/fceux-am/*
+/fceux-am
 !/nvboard/*
 !/abstract-machine/*
 /am-kernels
