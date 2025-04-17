@@ -60,4 +60,8 @@ void isa_difftest_attach();
 void write_iringbuf();
 void print_iringbuf();
 
+// ftrace
+void print_call(word_t pc, word_t dnpc);
+void print_ret(word_t pc);
+
 #endif

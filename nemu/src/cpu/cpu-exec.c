@@ -33,6 +33,7 @@ static bool g_print_step = false;
 void device_update();
 void write_iringbuf(char *logbuf);
 void print_iringbuf();
+void free_ftrace();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
@@ -122,6 +123,7 @@ void cpu_exec(uint64_t n) {
 
     case NEMU_END: case NEMU_ABORT:
 			if (nemu_state.state == NEMU_ABORT) print_iringbuf();
+			free_ftrace();
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
