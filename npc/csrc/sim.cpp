@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <string>
 #include <stdexcept>
+#include <sstream>
 #include "Vysyx_25040101_riscv.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
@@ -45,6 +46,7 @@ struct SimulationContext {
 	
 /* for ebreak */
 bool is_trapped = false;
+word_t code;
 
 /* get the binary file based on the arguments */ 
 static void parse_args(const int argc, char *argv[], SimulationContext& ctx) {
@@ -55,8 +57,9 @@ static void parse_args(const int argc, char *argv[], SimulationContext& ctx) {
 				case 1: img_file = optarg; return;
 				default: assert(0);
 			}	*/
-
-	if (argc > 1) ctx.img_file = argv[1]; 
+	if (argc > 1) {
+		ctx.img_file = argv[1]; 
+	}
 }
 
 /* initialize memory and load img */
@@ -124,8 +127,18 @@ static void pmem_read(SimulationContext& ctx) {
 	ctx.dut->inst = ctx.rom.at(paddr / 4);
 }
 
+/* output hit trap information */
+void print_info(SimulationContext& ctx) {
+	std::stringstream ss;
+	ss << std::hex << std::setw(8) << std::setfill('0') << ctx.dut->pc;
+	if (!code) std::cout << "\033[32mHit Good Trap \033[0m";
+	else 			 std::cout << "\033[31mHit Bad Trap \033[0m";
+	std::cout << "at pc = 0x" << ss.str() << "\n";
+}
+
 /* DPI-C to end the simulation */
-extern "C" void ebreak() {		
+extern "C" void ebreak(word_t ebreak_code) {		
+	code = ebreak_code;
 	is_trapped = true;
 }
 
@@ -145,8 +158,8 @@ int main(int argc, char *argv[]) {
 			pmem_read(ctx);
 			exe_once(ctx);
 		}
-		/* output trap information */
-		std::cout << "Trap at PC: 0x" << std::hex << std::setw(8) << std::setfill('0') << ctx.dut->pc << "\n";
+		/* output hit trap information */
+		print_info(ctx);
 	} catch (const std::exception& e) {
 		/* output error information */
 		std::cerr << "Error: " << e.what() << "\n";

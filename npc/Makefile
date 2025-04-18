@@ -16,12 +16,17 @@ CPP_SRCS = $(wildcard $(CPP_DIR)/*.cpp)
 # top module
 TOP_MODULE = ysyx_25040101_riscv
 
+#IMG file
+IMG ?=
+
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator $(VERILATOR_FLASS) $(VERILOG_SRCS) $(CPP_SRCS) --top-module $(TOP_MODULE)
 
-wave: sim
-	obj_dir/V$(TOP_MODULE)
+run: sim
+	obj_dir/V$(TOP_MODULE) $(IMG)
+
+wave: sim run
 	gtkwave waveform.fst
 
 

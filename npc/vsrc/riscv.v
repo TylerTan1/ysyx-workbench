@@ -15,6 +15,7 @@ module ysyx_25040101_riscv(
 	wire[2:0]  imm_src;
 	wire[31:0] imm;
 	wire[31:0] srcb_data;
+	wire[31:0] reg_a0;
 
 
 	ysyx_25040101_pc_reg pc_reg1(
@@ -32,7 +33,8 @@ module ysyx_25040101_riscv(
 		.rs1_addr_i(inst[19:15]),
 		.rs2_addr_i(inst[24:20]),
 		.rs1_data_o(rs1_data),
-		.rs2_data_o(rs2_data)
+		.rs2_data_o(rs2_data),
+		.reg_a0_o(reg_a0)	
 	);
 
 	ysyx_25040101_ctrl_unit ctrl_unit1(
@@ -42,7 +44,8 @@ module ysyx_25040101_riscv(
 		.alu_ctrl_o(alu_ctrl),
 		.alu_src_o(alu_src),
 		.imm_src_o(imm_src),
-		.rd_wen_o(rd_wen)
+		.rd_wen_o(rd_wen),
+		.reg_a0_i(reg_a0)
 	);
 
 	ysyx_25040101_extend extend1(

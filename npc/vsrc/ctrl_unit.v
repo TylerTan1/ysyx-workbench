@@ -3,6 +3,7 @@ module ysyx_25040101_ctrl_unit(
 	input wire[6:0] opcode_i,
 	input wire[2:0] func3_i,
 	input wire		  func7_i,
+	input wire[31:0]reg_a0_i,
 
 	output wire[1:0] alu_ctrl_o,
 	output wire			 alu_src_o,
@@ -23,10 +24,10 @@ module ysyx_25040101_ctrl_unit(
 		})
 	);
 
-	import "DPI-C" function void ebreak();
+	import "DPI-C" function void ebreak(int unsigned break_code);
 	always @(*) begin
 		if (opcode_i == 7'b1110011 && func3_i == 3'b000 && func7_i == 1'b0) begin
-			ebreak();
+			ebreak(reg_a0_i);
 		end
 	end
 endmodule
