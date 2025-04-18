@@ -1,14 +1,14 @@
 VERILATOR_FLASS = --cc --exe --build --trace-fst
 
 # dir to all verilog file
-VERILOG_DIR = vsrc
+VERILOG_DIR = $(NPC_HOME)/vsrc
 TEMPLATES_DIR = $(VERILOG_DIR)/templates
 
 # all verilog file
 VERILOG_SRCS = $(wildcard $(VERILOG_DIR)/*.v) $(wildcard $(TEMPLATES_DIR)/*.v)
 
 # dir to all cpp file
-CPP_DIR = csrc
+CPP_DIR = $(NPC_HOME)/csrc
 
 # all cpp file
 CPP_SRCS = $(wildcard $(CPP_DIR)/*.cpp)
@@ -20,7 +20,7 @@ sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator $(VERILATOR_FLASS) $(VERILOG_SRCS) $(CPP_SRCS) --top-module $(TOP_MODULE)
 
-wave:
+wave: sim
 	obj_dir/V$(TOP_MODULE)
 	gtkwave waveform.fst
 

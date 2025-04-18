@@ -123,7 +123,7 @@ void cpu_exec(uint64_t n) {
 
     case NEMU_END: case NEMU_ABORT:
 			if (nemu_state.state == NEMU_ABORT) print_iringbuf();
-			free_ftrace();
+			IFDEF(CONFIG_FTRACE, free_ftrace());
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
