@@ -3,19 +3,18 @@ module ysyx_25040101_ctrl_unit(
 	input wire[6:0] opcode_i,
 	input wire[2:0] func3_i,
 	input wire		  func7_i,
-
 	/* from regs to output ebreak code */			
 	input wire[31:0] reg_a0_i,
-
 	/* to alu */
-	output wire[1:0] alu_ctrl_o,
-
+	output wire[3:0] alu_ctrl_o,
+	/* to mux_srca */
+	output wire			 srca_ctrl_o,
 	/* to mux_srcb */
-	output wire			 is_imm_o,
-
+	output wire[1:0] srcb_ctrl_o,
+	/* to pc_reg */
+	output wire[1:0] pc_ctrl_o,
 	/* to extend */
 	output wire[4:0] imm_type_o,
-
 	/* to regs */
 	output wire			 rd_wen_o
 );
@@ -60,20 +59,38 @@ module ysyx_25040101_ctrl_unit(
 	/* I_system */
 	wire is_ebreak = (is_I_system && func3_000 && func7_0000000);
 
+	/* I_jalr */
+	wire is_jalr = is_I_jalr;
+
+	/* U */
+	wire is_auipc = is_U_auipc;
+	wire is_lui 	= is_U_lui;
+
+	/* J */
+	wire is_jal = is_J;
+
 /*------------------------------------------------------------*/
 
 	/* output control signals */
 
 	/* to alu */
-	assign alu_ctrl_o[0] = is_addi;	// add
-	assign alu_ctrl_o[1] = 1'b0;
+	assign alu_ctrl_o[0] = (is_addi || is_auipc);	// srca + srcb
+	assign alu_ctrl_o[1] = 1'b0;									// srca - srcb
+	assign alu_ctrl_o[2] = is_lui;								// srcb
+	assign alu_ctrl_o[3] = is_jalr;								// srcb + 4
+	/* to mux_srca */
+	assign srca_ctrl_o  = (is_auipc || is_jal);								// is pc
 
 	/* to mux_srcb */
-	assign is_imm_o = is_addi;
+	assign srcb_ctrl_o[0] = (is_addi || is_auipc || is_lui);	// is imm
+	assign srcb_ctrl_o[1] = (is_jal || is_jalr);														// is 4
+
+	/* to pc_reg */
+	assign pc_ctrl_o[0] = is_jal;		// pc + imm
+	assign pc_ctrl_o[1] = is_jalr;	// src1 + imm
 
 	/* to regs */
-  assign rd_wen_o = is_addi;
-
+  assign rd_wen_o = (is_addi || is_auipc || is_lui || is_jal);
 
 
 /*------------------------------------------------------------*/

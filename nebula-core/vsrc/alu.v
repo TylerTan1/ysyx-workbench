@@ -4,7 +4,7 @@ module ysyx_25040101_alu(
 	// from mux_srcb
 	input wire[31:0] srcb_data_i,
 	// from ctrl_unit
-	input wire[1:0]	 alu_ctrl_i,
+	input wire[3:0]	 alu_ctrl_i,
 	// to regs/ram
 	output wire[31:0] alu_result_o
 );
@@ -16,15 +16,17 @@ module ysyx_25040101_alu(
 
 	/* TODO: 此处对于独热编码有无更好的解码方式? */
 	mux #(
-		.NR_KEY(2),
-		.KEY_LEN(2),
+		.NR_KEY(4),
+		.KEY_LEN(4),
 		.DATA_LEN(32)
 	) mux_result (
 		.out(alu_result_o),
 		.key(alu_ctrl_i),
 		.lut({
-			2'b01, result_add_sub,
-			2'b10, result_add_sub
+			4'b0001, result_add_sub,
+			4'b0010, result_add_sub,
+			4'b0100, srcb_data_i,
+			4'b1000, srcb_data_i
 		})
 	);
 

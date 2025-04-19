@@ -19,7 +19,7 @@ module ysyx_25040101_extend(
 			5'b10000, { {20{inst_i[31]}}, inst_i[31:20] },																				// I
 			5'b01000,{ {20{inst_i[31]}}, inst_i[31:25], inst_i[11:7] },														// S
 			5'b00100,{ {21{inst_i[31]}}, inst_i[7], inst_i[30:25], inst_i[11:8] },								// B
-			5'b00010,{ {12{inst_i[31]}}, inst_i[31:12] },																					// U
+			5'b00010,{ inst_i[31:12], {12{1'b0}} },																					// U  notice: already shift left 12 digits
 			5'b00001,{ {12{inst_i[31]}}, inst_i[31], inst_i[19:12], inst_i[20], inst_i[30:21] }		// J
 		})
 	);	
