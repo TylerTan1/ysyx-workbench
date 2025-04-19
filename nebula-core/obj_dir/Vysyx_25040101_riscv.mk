@@ -46,7 +46,7 @@ VM_USER_CLASSES = \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
-	/home/tylertan/ysyx-workbench/npc/csrc \
+	/home/tylertan/ysyx-workbench/nebula-core/csrc \
 
 
 ### Default rules...
@@ -58,7 +58,7 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-sim.o: /home/tylertan/ysyx-workbench/npc/csrc/sim.cpp
+sim.o: /home/tylertan/ysyx-workbench/nebula-core/csrc/sim.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)
