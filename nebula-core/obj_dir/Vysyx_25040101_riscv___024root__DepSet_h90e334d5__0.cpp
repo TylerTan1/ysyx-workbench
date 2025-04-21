@@ -42,7 +42,9 @@ void Vysyx_25040101_riscv___024root___eval_triggers__act(Vysyx_25040101_riscv___
     Vysyx_25040101_riscv__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vysyx_25040101_riscv___024root___eval_triggers__act\n"); );
     // Body
-    vlSelf->__VactTriggered.set(0U, (((IData)(vlSelf->clk) 
+    vlSelf->__VactTriggered.set(0U, ((~ (IData)(vlSelf->clk)) 
+                                     & (IData)(vlSelf->__Vtrigprevexpr___TOP__clk__0)));
+    vlSelf->__VactTriggered.set(1U, (((IData)(vlSelf->clk) 
                                       & (~ (IData)(vlSelf->__Vtrigprevexpr___TOP__clk__0))) 
                                      | ((IData)(vlSelf->rst) 
                                         & (~ (IData)(vlSelf->__Vtrigprevexpr___TOP__rst__0)))));

@@ -2,16 +2,15 @@ VERILATOR_FLASS = --cc --exe --build --trace-fst
 
 # dir to all verilog file
 VERILOG_DIR = $(NPC_HOME)/vsrc
-TEMPLATES_DIR = $(VERILOG_DIR)/templates
 
 # all verilog file
-VERILOG_SRCS = $(wildcard $(VERILOG_DIR)/*.v) $(wildcard $(TEMPLATES_DIR)/*.v)
+VERILOG_SRCS = $(shell find $(VERILOG_DIR) -name "*.v")
 
 # dir to all cpp file
 CPP_DIR = $(NPC_HOME)/csrc
 
 # all cpp file
-CPP_SRCS = $(wildcard $(CPP_DIR)/*.cpp)
+CPP_SRCS = $(shell find $(CPP_DIR) -name "*.cpp")
 
 # top module
 TOP_MODULE = ysyx_25040101_riscv
@@ -31,7 +30,7 @@ wave: sim run
 
 
 clean:
-	rm -rf obj_dir waveform.fst
+	rm -rf obj_dir waveform.fst waveform.fst.hier
 
 .PHONY: clean sim wave
 

@@ -2,19 +2,23 @@ module ysyx_25040101_riscv(
 	input wire clk,
 	input wire rst,
 	// to rom
-	output wire[31:0] pc,
+	output wire[31:0] next_pc,
 	// from rom
 	input wire[31:0] inst
 );
-	wire[31:0] next_pc;
+	wire[31:0] pc;
 	wire[31:0] rd_data;
 	wire			 rd_wen;
 	wire[31:0] rs1_data;
 	wire[31:0] rs2_data;
-	wire[3:0]	 alu_ctrl;
-	wire			 srca_ctrl;
+	wire[1:0]	 alu_ctrl;
+	wire[1:0]	 srca_ctrl;
 	wire[1:0]	 srcb_ctrl;
-	wire[1:0]	 pc_ctrl;
+	wire			 pc_ctrl;
+	wire			 pc_srca_ctrl;
+	wire			 pc_srcb_ctrl;
+	wire[31:0] pc_srca;
+	wire[31:0] pc_srcb;
 	wire[4:0]  imm_type;
 	wire[31:0] imm;
 	wire[31:0] srca_data;
@@ -29,10 +33,22 @@ module ysyx_25040101_riscv(
 		.pc_o(pc)
 	);
 
-  ysyx_25040101_pc_plus pc_plus1(
+	ysyx_25040101_mux_pc_srca mux_pc_srca1(
 		.pc_i(pc),
-	  .rs1_data_i(rs1_data),
+		.rs1_data_i(rs1_data),
+		.pc_srca_ctrl_i(pc_srca_ctrl),
+		.pc_srca_o(pc_srca)
+	);
+
+	ysyx_25040101_mux_pc_srcb mux_pc_srcb1(
 		.imm_i(imm),
+		.pc_srcb_ctrl_i(pc_srcb_ctrl),
+		.pc_srcb_o(pc_srcb)
+	);
+
+  ysyx_25040101_pc_plus pc_plus1(
+		.pc_srca_i(pc_srca),
+		.pc_srcb_i(pc_srcb),
 		.pc_ctrl_i(pc_ctrl),
 		.next_pc_o(next_pc)
 	);
@@ -42,7 +58,7 @@ module ysyx_25040101_riscv(
 		.rst(rst),
 		.rd_data_i(rd_data),
 		.rd_addr_i(inst[11:7]),
-		.rd_wen(rd_wen),
+		.rd_wen_i(rd_wen),
 		.rs1_addr_i(inst[19:15]),
 		.rs2_addr_i(inst[24:20]),
 		.rs1_data_o(rs1_data),
@@ -58,13 +74,15 @@ module ysyx_25040101_riscv(
 		.srca_ctrl_o(srca_ctrl),
 		.srcb_ctrl_o(srcb_ctrl),
 		.pc_ctrl_o(pc_ctrl),
+		.pc_srca_ctrl_o(pc_srca_ctrl),
+		.pc_srcb_ctrl_o(pc_srcb_ctrl),
 		.imm_type_o(imm_type),
 		.rd_wen_o(rd_wen),
 		.reg_a0_i(reg_a0)
 	);
 
 	ysyx_25040101_extend extend1(
-		.inst_i(inst[31:7]),
+		.raw_imm_i(inst[31:7]),
 		.imm_type_i(imm_type),
 		.imm_o(imm)
 	);

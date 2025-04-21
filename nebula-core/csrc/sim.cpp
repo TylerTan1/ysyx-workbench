@@ -123,14 +123,14 @@ static word_t guest_to_host(word_t addr) {
 
 /* set inst based on pc */
 static void pmem_read(SimulationContext& ctx) {
-	word_t paddr = guest_to_host(ctx.dut->pc);
+	word_t paddr = guest_to_host(ctx.dut->next_pc);
 	ctx.dut->inst = ctx.rom.at(paddr / 4);
 }
 
 /* output hit trap information */
 void print_info(SimulationContext& ctx) {
 	std::stringstream ss;
-	ss << std::hex << std::setw(8) << std::setfill('0') << ctx.dut->pc;
+	ss << std::hex << std::setw(8) << std::setfill('0') << ctx.dut->next_pc;
 	if (!code) std::cout << "\033[32mHit Good Trap \033[0m";
 	else 			 std::cout << "\033[31mHit Bad Trap \033[0m";
 	std::cout << "at pc = 0x" << ss.str() << "\n";
