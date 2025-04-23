@@ -28,7 +28,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vysyx_25040101_riscv VL_NOT_FINAL : public Ve
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clk,0,0);
     VL_IN8(&rst,0,0);
-    VL_OUT(&next_pc,31,0);
+    VL_OUT(&pc,31,0);
     VL_IN(&inst,31,0);
 
     // CELLS

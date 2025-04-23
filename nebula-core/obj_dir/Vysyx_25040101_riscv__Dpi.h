@@ -16,7 +16,7 @@ extern "C" {
 
 
     // DPI IMPORTS
-    // DPI import at /home/tylertan/ysyx-workbench/nebula-core/vsrc/ctrl_unit.v:115:31
+    // DPI import at /home/tylertan/ysyx-workbench/nebula-core/vsrc/idu/ctrl_unit.v:115:31
     extern void ebreak(unsigned int break_code);
 
 #ifdef __cplusplus

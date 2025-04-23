@@ -12,7 +12,7 @@ Vysyx_25040101_riscv::Vysyx_25040101_riscv(VerilatedContext* _vcontextp__, const
     , vlSymsp{new Vysyx_25040101_riscv__Syms(contextp(), _vcname__, this)}
     , clk{vlSymsp->TOP.clk}
     , rst{vlSymsp->TOP.rst}
-    , next_pc{vlSymsp->TOP.next_pc}
+    , pc{vlSymsp->TOP.pc}
     , inst{vlSymsp->TOP.inst}
     , rootp{&(vlSymsp->TOP)}
 {

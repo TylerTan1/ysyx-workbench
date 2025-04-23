@@ -47,9 +47,9 @@ class alignas(VL_CACHE_LINE_BYTES) Vysyx_25040101_riscv___024root final : public
         CData/*0:0*/ __Vtrigprevexpr___TOP__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__rst__0;
         CData/*0:0*/ __VactContinue;
-        VL_OUT(next_pc,31,0);
+        VL_OUT(pc,31,0);
         VL_IN(inst,31,0);
-        IData/*31:0*/ ysyx_25040101_riscv__DOT__pc;
+        IData/*31:0*/ ysyx_25040101_riscv__DOT__next_pc;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__rd_data;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__rs1_data;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__rs2_data;

@@ -35,6 +35,7 @@ VM_PREFIX = Vysyx_25040101_riscv
 VM_MODPREFIX = Vysyx_25040101_riscv
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
+	-I/home/tylertan/ysyx-workbench/nebula-core/csrc/include -g \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
@@ -42,11 +43,19 @@ VM_USER_LDLIBS = \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
-	sim \
+	main \
+	cpu \
+	memory \
+	regs \
+	monitor \
+	sdb \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
 	/home/tylertan/ysyx-workbench/nebula-core/csrc \
+	/home/tylertan/ysyx-workbench/nebula-core/csrc/src/cpu \
+	/home/tylertan/ysyx-workbench/nebula-core/csrc/src/memory \
+	/home/tylertan/ysyx-workbench/nebula-core/csrc/src/monitor \
 
 
 ### Default rules...
@@ -58,7 +67,17 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-sim.o: /home/tylertan/ysyx-workbench/nebula-core/csrc/sim.cpp
+main.o: /home/tylertan/ysyx-workbench/nebula-core/csrc/main.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+cpu.o: /home/tylertan/ysyx-workbench/nebula-core/csrc/src/cpu/cpu.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+memory.o: /home/tylertan/ysyx-workbench/nebula-core/csrc/src/memory/memory.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+regs.o: /home/tylertan/ysyx-workbench/nebula-core/csrc/src/memory/regs.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+monitor.o: /home/tylertan/ysyx-workbench/nebula-core/csrc/src/monitor/monitor.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+sdb.o: /home/tylertan/ysyx-workbench/nebula-core/csrc/src/monitor/sdb.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)

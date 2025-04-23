@@ -2,11 +2,11 @@ module ysyx_25040101_riscv(
 	input wire clk,
 	input wire rst,
 	// to rom
-	output wire[31:0] next_pc,
+	output wire[31:0] pc,
 	// from rom
 	input wire[31:0] inst
 );
-	wire[31:0] pc;
+	wire[31:0] next_pc;
 	wire[31:0] rd_data;
 	wire			 rd_wen;
 	wire[31:0] rs1_data;
