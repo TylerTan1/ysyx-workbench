@@ -3,8 +3,6 @@ module ysyx_25040101_ctrl_unit(
 	input wire[6:0] opcode_i,
 	input wire[2:0] func3_i,
 	input wire		  func7_i,
-	/* from regs to output ebreak code */			
-	input wire[31:0] reg_a0_i,
 	/* to alu */
 	output wire[1:0] alu_ctrl_o,
 	/* to mux_srca */
@@ -20,7 +18,9 @@ module ysyx_25040101_ctrl_unit(
 	/* to extend */
 	output wire[4:0] imm_type_o,
 	/* to regs */
-	output wire			 rd_wen_o
+	output wire			 rd_wen_o,
+	/* to top */
+	output wire 		 is_ebreak_o
 );
 	/* opcode handle */
 	wire opcode_1_0_11 = (opcode_i[1:0] == 2'b11);
@@ -61,7 +61,7 @@ module ysyx_25040101_ctrl_unit(
 	wire is_addi = (is_I_op && func3_000);
 	
 	/* I_system */
-	wire is_ebreak = (is_I_system && func3_000 && func7_0);
+	assign is_ebreak_o = (is_I_system && func3_000 && func7_0);
 
 	/* I_jalr */
 	wire is_jalr = is_I_jalr;
@@ -109,13 +109,4 @@ module ysyx_25040101_ctrl_unit(
 	wire is_U = (is_U_lui || is_U_auipc);
 	assign imm_type_o = {is_I, is_S, is_B, is_U, is_J};
 
-/*------------------------------------------------------------*/
-
-	/* ebreak instruction */
-	import "DPI-C" function void ebreak(int unsigned break_code);
-	always @(*) begin
-		if (is_ebreak) begin
-			ebreak(reg_a0_i);
-		end
-	end
 endmodule

@@ -13,15 +13,18 @@ module ysyx_25040101_regs (
 	output wire[31:0] rs1_data_o,
 	/* to mux_srcb */
 	output wire[31:0] rs2_data_o,
-	/* to ctrl_unit */
-	output wire[31:0] reg_a0_o
+	/* to top */
+	output wire[31:1][31:0] regs_data_o
 );
 	/* initial the registers except x0 */
-  reg [31:0] regs [31:1];
-	integer i;
+  reg[31:0] regs [31:1];
 
-	/* output ebreak code */
-	assign reg_a0_o = regs[10];
+	genvar i;
+	generate
+		for (i = 1; i < 32; i = i + 1) begin
+			assign regs_data_o[i] = regs[i];
+		end
+	endgenerate
 
 	/* read */
 	assign rs1_data_o = (rs1_addr_i == 0) ? 0 : regs[rs1_addr_i];

@@ -1,10 +1,13 @@
 module ysyx_25040101_riscv(
 	input wire clk,
 	input wire rst,
-	// to rom
+	/* to rom */
 	output wire[31:0] pc,
-	// from rom
-	input wire[31:0] inst
+	/* from rom */
+	input wire[31:0] inst,
+	/* to cpp */
+	output wire[31:1][31:0] regs_data,
+	output wire is_ebreak
 );
 	wire[31:0] next_pc;
 	wire[31:0] rd_data;
@@ -63,7 +66,7 @@ module ysyx_25040101_riscv(
 		.rs2_addr_i(inst[24:20]),
 		.rs1_data_o(rs1_data),
 		.rs2_data_o(rs2_data),
-		.reg_a0_o(reg_a0)	
+		.regs_data_o(regs_data)	
 	);
 
 	ysyx_25040101_ctrl_unit ctrl_unit1(
@@ -78,7 +81,7 @@ module ysyx_25040101_riscv(
 		.pc_srcb_ctrl_o(pc_srcb_ctrl),
 		.imm_type_o(imm_type),
 		.rd_wen_o(rd_wen),
-		.reg_a0_i(reg_a0)
+		.is_ebreak_o(is_ebreak)
 	);
 
 	ysyx_25040101_extend extend1(

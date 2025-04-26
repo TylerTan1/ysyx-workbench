@@ -1,8 +1,8 @@
-VERILATOR_FLAGS = --cc --exe --build --trace-fst
+VERILATOR_FLAGS = --cc --exe --build --trace-fst --sv
 
 # all verilog files
 VERILOG_DIR = $(NPC_HOME)/vsrc
-VERILOG_SRCS = $(shell find $(VERILOG_DIR) -name "*.v")
+VERILOG_SRCS = $(shell find $(VERILOG_DIR) -name "*.v")  
 
 # all cpp files
 CPP_DIR = $(NPC_HOME)/csrc
