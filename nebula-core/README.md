@@ -3,28 +3,35 @@
 nebula-core
 ├── Kconfig
 ├── Makefile
-├── README
+├── README.md
 ├── csrc
+│   ├── filelist.mk
 │   ├── include
+│   │   ├── color.h
 │   │   ├── common.h
 │   │   ├── cpu.h
 │   │   ├── memory.h
-│   │   └── monitor.h
+│   │   ├── monitor.h
+│   │   └── utils.h
 │   ├── main.cpp
 │   └── src
 │       ├── cpu
-│       │   ├── cpu.cpp
-│       │   ├── disarm.cpp
-│       │   └── disarm.h
 │       ├── memory
-│       │   ├── memory.cpp
-│       │   └── regs.cpp
-│       └── monitor
-│           ├── monitor.cpp
-│           ├── sdb.cpp
-│           └── sdb.h
+│       ├── monitor
+│       └── utils
+├── include
+│   ├── config
+│   └── generated
+├── scripts
+│   ├── build.mk
+│   ├── config.mk
+│   └── native.mk
 ├── tags
+├── tools
+│   ├── capstone
+│   └── kconfig
 └── vsrc
+    ├── filelist.mk
     ├── riscv.v
     ├── src
     │   ├── alu.v

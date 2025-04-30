@@ -35,7 +35,7 @@ VM_PREFIX = Vysyx_25040101_riscv
 VM_MODPREFIX = Vysyx_25040101_riscv
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
-	-O2 -Wall -I/home/tylertan/ysyx-workbench/nebula-core/csrc/include -I/home/tylertan/ysyx-workbench/nebula-core/include -ldl -I/home/tylertan/ysyx-workbench/nebula-core/tools/capstone/repo/include \
+	-O2 -I/home/tylertan/ysyx-workbench/nebula-core/csrc/include -I/home/tylertan/ysyx-workbench/nebula-core/include -ldl -I/home/tylertan/ysyx-workbench/nebula-core/tools/capstone/repo/include \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \

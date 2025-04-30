@@ -1,6 +1,7 @@
 #include <cpu.h>
 #include <memory.h>
 #include <utils.h>
+#include <color.h>
 
 const int max_print = 10;
 
@@ -41,17 +42,17 @@ static void print_info(SimulationContext& ctx) {
 	std::stringstream ss;
 	ss << std::hex << std::setw(8) << std::setfill('0') << ctx.dut->pc;
 	if (!ctx.dut->regs_data[9]) {
-		std::cout << "\033[32mHit Good Trap \033[0m";
+		std::cout << GREEN << "Hit Good Trap ";
 	} else {
-		std::cout << "\033[31mHit Bad Trap \033[0m";
+		std::cout << RED << "[31mHit Bad Trap ";
 	}
-	std::cout << "at pc = 0x" << ss.str() << std::endl;
+	std::cout << YELLOW << "at pc = 0x" << ss.str() << RESET_COLOR << std::endl;
 }
 
 int cpu::execute(uint32_t steps, SimulationContext& ctx) {
 	word_t inst;
 	bool print_inst = (steps < max_print);
-	std::cout << "Executing..." << std::endl;
+	std::cout << YELLOW << "Executing..." << RESET_COLOR << std::endl;
 	/* send clock signal and execute untill ebreak */
 	for (uint32_t i = 0; i < steps; i++) {
 		ctx.dut->inst = memory::read(ctx.dut->pc + 4, ctx);

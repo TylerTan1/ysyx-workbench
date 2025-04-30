@@ -12,15 +12,14 @@ BINARY := $(OBJ_DIR)/V$(TOP_MODULE)
 NPC_EXEC := $(BINARY) $(ARGS) $(IMG)
 
 run: sim
-	@echo "Running..."
-	$(NPC_EXEC)
+	@echo "$(COLOR_YELLOW)Running...$(COLOR_END)"
+	@$(NPC_EXEC)
 
 run-batch: sim
-	@echo "Running batch mode..."
-	$(NPC_EXEC) -b
+	@$(NPC_EXEC) -b
 
 wave: run-batch
-	gtkwave $(OBJ_DIR)/waveform.fst
+	@gtkwave $(OBJ_DIR)/waveform.fst
 
 clean-tools = $(dir $(shell find ./tools -maxdepth 2 -mindepth 2 -name "Makefile"))
 $(clean-tools):

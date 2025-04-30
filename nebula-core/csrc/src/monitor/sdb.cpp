@@ -1,13 +1,14 @@
 #include <monitor.h>
 #include <memory.h>
 #include <cpu.h>
+#include <color.h>
 
 #include "sdb.h"
 
 static bool is_batch_mode= false;
 
 void set_batch_mode() {
-	std::cout << "Running in batch mode..." << std::endl;
+	std::cout << YELLOW << "Running in batch mode..." << RESET_COLOR << std::endl;
 	is_batch_mode = true;
 }
 
@@ -106,7 +107,7 @@ void monitor::mainloop(SimulationContext& ctx) {
   }
 	
 	std::string input;
-	std::cout << "(nebula) ";
+	std::cout << CYAN << "(nebula) " << RESET_COLOR;
 	while (std::getline(std::cin, input)) {
 		std::istringstream iss(input);
 		std::string cmd, args;
@@ -124,6 +125,6 @@ void monitor::mainloop(SimulationContext& ctx) {
 		}	else {
 			std::cout << "Unknown command '" << cmd << "'" << std::endl;
 		}
-		std::cout <<"(nebula) ";
+		std::cout << CYAN << "(nebula) " << RESET_COLOR;
 	}
 }

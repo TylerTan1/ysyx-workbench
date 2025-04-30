@@ -2,6 +2,7 @@
 #include <cpu.h> 
 #include <memory.h>
 #include <utils.h>
+#include <color.h>
 
 #include <cassert>
 #include <getopt.h>
@@ -27,8 +28,8 @@ static void welcome() {
 	for (int i = 0; i < 40; i++)
 		std::cout << "-";
 	std::cout << std::endl;
-	std::cout << "Welcome to riscv32-nebula-core!" << std::endl;
-	std::cout << "For help, type \"help\"" << std::endl;
+	std::cout << YELLOW << "Welcome to riscv32-nebula-core!" << std::endl;
+	std::cout << "For help, type \"help\"" << RESET_COLOR << std::endl;
 }
 
 void monitor::initialize(int argc, char *argv[], SimulationContext& ctx) {

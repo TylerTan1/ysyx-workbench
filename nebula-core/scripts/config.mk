@@ -1,5 +1,8 @@
-COLOR_RED := $(shell echo "\033[1;31m")
-COLOR_END := $(shell echo "\033[0m")
+COLOR_RED    := $(shell echo "\033[1;31m")
+COLOR_GREEN  := $(shell echo "\033[1;32m")
+COLOR_YELLOW := $(shell echo "\033[1;33m")
+COLOR_BLUE   := $(shell echo "\033[1;34m")
+COLOR_END    := $(shell echo "\033[0m")
 
 ifeq ($(wildcard .config),)
 $(warning $(COLOR_RED)Warning: .config does not exist!$(COLOR_END))

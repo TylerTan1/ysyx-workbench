@@ -11,15 +11,15 @@ LIBS := -ldl
 
 # flags for varilator
 VFLAGS := --cc --exe --build --trace-fst
-CFLAGS := -O2 -Wall $(INC_HEADER) $(LIBS) $(CFLAGS)
+CFLAGS := -O2 $(INC_HEADER) $(LIBS) $(CFLAGS)
 
 sim:
 	@$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "------------Verilator compiling-------------------------"
-	verilator $(VFLAGS) $(VERILOG_SRCS) $(CPP_SRCS) --top-module $(TOP_MODULE) --CFLAGS "$(CFLAGS)"
+	@echo "$(COLOR_YELLOW)Verilator compiling...$(COLOR_END)"
+	@verilator $(VFLAGS) $(VERILOG_SRCS) $(CPP_SRCS) --top-module $(TOP_MODULE) --CFLAGS "$(CFLAGS)"
 
 clean:
 	@-rm -rf $(OBJ_DIR) 
-	@echo "Cleaning successfully"
+	@echo "$(COLOR_YELLOW)Cleaning successfully$(COLOR_END)"
 
 .PHONY: sim clean

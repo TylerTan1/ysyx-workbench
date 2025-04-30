@@ -30,5 +30,3 @@ struct SimulationContext {
 		trace->open("obj_dir/waveform.fst");
 	}
 };
-
-extern SimulationContext ctx;
