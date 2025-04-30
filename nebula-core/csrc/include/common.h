@@ -27,12 +27,7 @@ struct SimulationContext {
 		trace = std::make_unique<VerilatedFstC>();
 		context = std::make_unique<VerilatedContext>();
 		dut->trace(trace.get(), 99);
-		trace->open("waveform.fst");
-	}
-
-	/* automatically release allocated memory and close trace */
-	~SimulationContext() {		
-		if (trace) trace->close();
+		trace->open("obj_dir/waveform.fst");
 	}
 };
 

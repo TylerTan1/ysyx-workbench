@@ -34,4 +34,3 @@ void print_iringbuf() {
 
 	free(bf);
 }
-

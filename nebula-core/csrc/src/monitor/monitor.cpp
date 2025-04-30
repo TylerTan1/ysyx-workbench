@@ -1,6 +1,7 @@
 #include <monitor.h>
 #include <cpu.h> 
 #include <memory.h>
+#include <utils.h>
 
 #include <cassert>
 #include <getopt.h>
@@ -39,6 +40,9 @@ void monitor::initialize(int argc, char *argv[], SimulationContext& ctx) {
 	
 	/* initialize memory */
 	memory::init_rom(ctx);
+
+	/* initialize disassemble */
+	utils::init_disasm();
 
 	/* send reset signal */
 	cpu::reset(ctx);
