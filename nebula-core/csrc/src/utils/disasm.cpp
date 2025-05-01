@@ -3,6 +3,8 @@
 #include <dlfcn.h>
 #include <capstone/capstone.h>
 
+#include "disasm.h"
+
 typedef size_t (*cs_disasm_dl)(csh, const uint8_t*, size_t, uint64_t, size_t, cs_insn **);
 typedef void (*cs_free_dl)(cs_insn*, size_t);
 
@@ -11,6 +13,7 @@ static cs_free_dl csfree;
 static csh handle;
 
 void utils::init_disasm() {
+	std::cout << "Initializing disassemble function..." << std::endl;
 	void *dl_handle;
 	dl_handle = dlopen("tools/capstone/repo/libcapstone.so.5", RTLD_LAZY);
   assert(dl_handle);
@@ -32,11 +35,18 @@ void utils::init_disasm() {
   assert(ret == CS_ERR_OK);
 }
 
-void utils::print_disasm(SimulationContext& ctx) {
+std::string disasm(SimulationContext& ctx) {
 	cs_insn *insn;
 	size_t count = csdisasm(handle, (uint8_t *)&ctx.dut->inst, 8, ctx.dut->pc, 0, &insn);
 	assert(count == 1);
-	std::cout << "0x" << std::hex << std::setw(8) << std::setfill('0') << insn[0].address
-						<< ":\t" << insn[0].mnemonic << "\t\t" << insn[0].op_str << std::endl;
+
+	std::ostringstream oss;
+	oss << "0x" << std::hex << std::setw(8) << std::setfill('0') << insn[0].address
+						<< ":\t" << insn[0].mnemonic << "\t\t" << insn[0].op_str;
 	csfree(insn, count);
+	return oss.str();
+}
+
+void utils::print_disasm(SimulationContext& ctx) {
+	std::cout << disasm(ctx) << std::endl; 
 }

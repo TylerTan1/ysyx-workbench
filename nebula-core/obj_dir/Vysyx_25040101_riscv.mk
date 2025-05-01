@@ -49,6 +49,7 @@ VM_USER_CLASSES = \
 	monitor \
 	sdb \
 	disasm \
+	log \
 	main \
 
 # User .cpp directories (from .cpp's on Verilator command line)
@@ -80,6 +81,8 @@ monitor.o: ./csrc/src/monitor/monitor.cpp
 sdb.o: ./csrc/src/monitor/sdb.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 disasm.o: ./csrc/src/utils/disasm.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+log.o: ./csrc/src/utils/log.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 main.o: csrc/main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<

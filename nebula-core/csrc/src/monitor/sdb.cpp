@@ -121,7 +121,10 @@ void monitor::mainloop(SimulationContext& ctx) {
 		/* find and execute command */
 		auto it = cmd_table.find(cmd);
 		if (it != cmd_table.end()) {
-			if (it->second.second(args, ctx) < 0) return;
+			if (it->second.second(args, ctx) < 0) { 
+				std::cout << "----------------------------------------" << std::endl;
+				return;
+			}
 		}	else {
 			std::cout << "Unknown command '" << cmd << "'" << std::endl;
 		}

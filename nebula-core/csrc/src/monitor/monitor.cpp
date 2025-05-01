@@ -33,9 +33,12 @@ static void welcome() {
 }
 
 void monitor::initialize(int argc, char *argv[], SimulationContext& ctx) {
+
 	/* parse arguments */
 	parse_args(argc, argv, ctx);
 	
+	std::cout << "Initializing simulation environment..." << std::endl;
+
 	/* initialize wave tracer, dut and context */
 	ctx.init_hardware();
 	
@@ -44,6 +47,11 @@ void monitor::initialize(int argc, char *argv[], SimulationContext& ctx) {
 
 	/* initialize disassemble */
 	utils::init_disasm();
+
+	/* initialize log file */
+#ifdef CONFIG_ITRACE
+	utils::init_log();
+#endif
 
 	/* send reset signal */
 	cpu::reset(ctx);

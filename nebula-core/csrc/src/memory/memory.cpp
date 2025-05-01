@@ -14,12 +14,14 @@ void memory::init_rom(SimulationContext& ctx) {
 
 	if (ctx.img_file.empty()) {			
 		/* load default instructions */
+		std::cout << "Loading default instructions..." << std::endl;
 		ctx.rom = insts;
 		return;
 	}
 
 	/* open image file */
 	std::ifstream file (ctx.img_file, std::ios::binary);
+	std::cout <<"Loading instructions from " << ctx.img_file << std::endl;
 	if (!file) throw std::runtime_error("Failed to open file: " + ctx.img_file);
     
 	/* record the size of the file */
@@ -27,8 +29,11 @@ void memory::init_rom(SimulationContext& ctx) {
 	const auto file_size = file.tellg();
 	file.seekg(0, std::ios::beg);			 
 
+	uint32_t num_insts = file_size / sizeof(word_t);
+	std::cout << "Initializing memory from 0x80000000 to 0x" 
+						<< std::hex << 0x80000000 + 4 * num_insts << std::endl;
 	/* define rom based on the size of the file */	
-	ctx.rom.resize(file_size / sizeof(word_t));
+	ctx.rom.resize(num_insts);
 
 	/* load the img file */
 	file.read(reinterpret_cast<char*>(ctx.rom.data()), file_size);

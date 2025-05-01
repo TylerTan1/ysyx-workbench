@@ -26,6 +26,7 @@ static void exe_once(SimulationContext& ctx) {
 
 /* send reset signal */
 void cpu::reset(SimulationContext& ctx) {
+	std::cout << "Sending reset signal..." << std::endl;
 	ctx.dut->inst = 0x00000013; // NOP
 															
 	ctx.dut->rst = 0;
@@ -61,6 +62,9 @@ int cpu::execute(uint32_t steps, SimulationContext& ctx) {
 		if (print_inst) {
 			utils::print_disasm(ctx);
 		}
+#ifdef CONFIG_ITRACE
+		utils::record_log(ctx);
+#endif
 		if (ctx.dut->is_ebreak) {
 			print_info(ctx);
 			return -1;

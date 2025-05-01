@@ -10,6 +10,8 @@
 #include "verilated_fst_c.h" 
 #include "verilated.h"
 
+#include <generated/autoconf.h>
+
 using word_t  = uint32_t;
 using sword_t = int32_t;
 
@@ -22,6 +24,7 @@ struct SimulationContext {
 	
 	/* allocate memory and open trace */
 	void init_hardware() {
+		std::cout << "Initializing hardware..." << std::endl;
 		dut = std::make_unique<Vysyx_25040101_riscv>();
 		Verilated::traceEverOn(true);
 		trace = std::make_unique<VerilatedFstC>();
