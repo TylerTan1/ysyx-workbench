@@ -1,15 +1,14 @@
 include $(NPC_HOME)/scripts/build.mk
 
-# TODO include difftest.mk
-
 # top module
 TOP_MODULE = ysyx_25040101_riscv
 
 # Commands to execute nebula-core
-IMG ?=
-ARGS ?= 
 BINARY := $(OBJ_DIR)/V$(TOP_MODULE) 
-NPC_EXEC := $(BINARY) $(ARGS) $(IMG)
+ARGS ?= 
+IMG ?=
+DIF = --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+NPC_EXEC := $(BINARY) $(ARGS) $(IMG) $(DIF)
 
 run: sim
 	@echo "$(COLOR_YELLOW)Running...$(COLOR_END)"

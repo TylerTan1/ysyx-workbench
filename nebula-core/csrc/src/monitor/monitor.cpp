@@ -9,17 +9,26 @@
 
 #include "sdb.h"
 
+char *diff_so_file;
+
 /* parse the arguments */ 
 static void parse_args(const int argc, char *argv[], SimulationContext& ctx) {
 	const struct option table[] = {
-		{"batch"	, no_argument			, NULL, 'b'},
+		{"batch"	, no_argument			 , NULL, 'b'},
+		{"diff"		, required_argument, NULL, 'd'},
 	};
 	int o;
-	while ((o = getopt_long(argc, argv, "-b", table, NULL)) != -1) { 
+	while ((o = getopt_long(argc, argv, "-bd:", table, NULL)) != -1) { 
 		switch (o) {
-			case 'b': set_batch_mode();  		 break;
-			case 1: 	ctx.img_file = optarg; break;
-			default:  assert(0);
+			case 'b': set_batch_mode();  		 		break;
+			case 'd': diff_so_file = optarg;		break;
+			case 1: 	ctx.img_file = optarg; 		break;
+			default: 
+				std::cout << "Usage: " << argv[0] << "[OPTION...] IMAGE [args]" << std::endl << std::endl
+									<< "\t-b, --batch		     run with batch mode" << std::endl
+									<< "\t-d, --diff=REF_SO  run with Difftest" << std::endl
+									<< std::endl;
+				exit(0);
 		}	
 	}
 }
@@ -43,7 +52,7 @@ void monitor::initialize(int argc, char *argv[], SimulationContext& ctx) {
 	ctx.init_hardware();
 	
 	/* initialize memory */
-	memory::init_rom(ctx);
+	size_t img_size = memory::init_rom(ctx);
 
 	/* initialize disassemble */
 	utils::init_disasm();
@@ -51,6 +60,11 @@ void monitor::initialize(int argc, char *argv[], SimulationContext& ctx) {
 	/* initialize log file */
 #ifdef CONFIG_ITRACE
 	utils::init_log();
+#endif
+
+	/* initialize difftest */
+#ifdef CONFIG_DIFFTEST
+	cpu::init_difftest(ctx, diff_so_file, img_size);
 #endif
 
 	/* send reset signal */

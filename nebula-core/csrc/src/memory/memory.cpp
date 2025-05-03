@@ -3,7 +3,7 @@
 #include <fstream>
 
 /* initialize memory and load img */
-void memory::init_rom(SimulationContext& ctx) {
+size_t memory::init_rom(SimulationContext& ctx) {
 	/* default instructions */
 	std::vector<word_t> insts = {
 		0x00200093, // addi x1, x0, 2
@@ -16,7 +16,7 @@ void memory::init_rom(SimulationContext& ctx) {
 		/* load default instructions */
 		std::cout << "Loading default instructions..." << std::endl;
 		ctx.rom = insts;
-		return;
+		return 16;
 	}
 
 	/* open image file */
@@ -26,18 +26,18 @@ void memory::init_rom(SimulationContext& ctx) {
     
 	/* record the size of the file */
 	file.seekg(0, std::ios::end);
-	const auto file_size = file.tellg();
+	const size_t file_size = file.tellg();
 	file.seekg(0, std::ios::beg);			 
 
-	uint32_t num_insts = file_size / sizeof(word_t);
 	std::cout << "Initializing memory from 0x80000000 to 0x" 
-						<< std::hex << 0x80000000 + 4 * num_insts << std::endl;
+						<< std::hex << 0x80000000 + file_size / 8 << std::endl;
 	/* define rom based on the size of the file */	
-	ctx.rom.resize(num_insts);
+	ctx.rom.resize(file_size / sizeof(word_t));
 
 	/* load the img file */
 	file.read(reinterpret_cast<char*>(ctx.rom.data()), file_size);
 	if (!file) throw std::runtime_error("Failed to read file: " + ctx.img_file);
+	return file_size;
 }
 
 /* return virtual address */
