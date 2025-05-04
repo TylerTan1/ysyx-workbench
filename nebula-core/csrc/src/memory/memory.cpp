@@ -15,8 +15,13 @@ size_t memory::init_rom(SimulationContext& ctx) {
 	if (ctx.img_file.empty()) {			
 		/* load default instructions */
 		std::cout << "Loading default instructions..." << std::endl;
-		ctx.rom = insts;
-		return 16;
+ 	  for (const auto& inst : insts) {
+      ctx.rom.push_back((inst >> 0) & 0xFF);  
+      ctx.rom.push_back((inst >> 8) & 0xFF);
+      ctx.rom.push_back((inst >> 16) & 0xFF);
+      ctx.rom.push_back((inst >> 24) & 0xFF); 
+    }
+		return ctx.rom.size();
 	}
 
 	/* open image file */
@@ -28,11 +33,12 @@ size_t memory::init_rom(SimulationContext& ctx) {
 	file.seekg(0, std::ios::end);
 	const size_t file_size = file.tellg();
 	file.seekg(0, std::ios::beg);			 
-
+	
+	uint32_t num_addr = file_size / sizeof(uint8_t);
 	std::cout << "Initializing memory from 0x80000000 to 0x" 
-						<< std::hex << 0x80000000 + file_size / 8 << std::endl;
+						<< std::hex << 0x80000000 + num_addr << std::endl;
 	/* define rom based on the size of the file */	
-	ctx.rom.resize(file_size / sizeof(word_t));
+	ctx.rom.resize(num_addr);
 
 	/* load the img file */
 	file.read(reinterpret_cast<char*>(ctx.rom.data()), file_size);
@@ -48,5 +54,14 @@ static word_t guest_to_host(word_t address) {
 /* set inst based on pc */
 word_t memory::read(word_t address, SimulationContext& ctx) {
 	word_t paddr = guest_to_host(address);
-	return  ctx.rom.at(paddr / 4);
+	if (paddr + 3 >= ctx.rom.size()) {
+    throw std::out_of_range("Address out of range");
+  }
+	word_t inst = 0;
+  inst |= ctx.rom[paddr + 0] << 0;
+  inst |= ctx.rom[paddr + 1] << 8;
+  inst |= ctx.rom[paddr + 2] << 16;
+  inst |= ctx.rom[paddr + 3] << 24; 
+
+	return inst;
 }

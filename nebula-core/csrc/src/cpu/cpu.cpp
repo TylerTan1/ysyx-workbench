@@ -56,7 +56,7 @@ int cpu::execute(uint32_t steps, SimulationContext& ctx) {
 	std::cout << YELLOW << "Executing..." << RESET_COLOR << std::endl;
 	/* send clock signal and execute untill ebreak */
 	for (uint32_t i = 0; i < steps; i++) {
-		ctx.dut->inst = memory::read(ctx.dut->pc + 4, ctx);
+		ctx.dut->inst = memory::read(ctx.dut->pc, ctx);
 		exe_once(ctx);
 		/* output instructions being executed */
 		if (print_inst) {

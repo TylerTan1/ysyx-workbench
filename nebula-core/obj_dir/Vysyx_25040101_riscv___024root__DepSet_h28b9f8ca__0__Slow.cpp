@@ -689,10 +689,10 @@ VL_ATTR_COLD void Vysyx_25040101_riscv___024root___dump_triggers__act(Vysyx_2504
         VL_DBG_MSGF("         No triggers active\n");
     }
     if ((1ULL & vlSelf->__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 0 is active: @(negedge clk)\n");
+        VL_DBG_MSGF("         'act' region trigger index 0 is active: @(posedge clk or posedge rst)\n");
     }
     if ((2ULL & vlSelf->__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 1 is active: @(posedge clk or posedge rst)\n");
+        VL_DBG_MSGF("         'act' region trigger index 1 is active: @(posedge clk)\n");
     }
 }
 #endif  // VL_DEBUG
@@ -707,10 +707,10 @@ VL_ATTR_COLD void Vysyx_25040101_riscv___024root___dump_triggers__nba(Vysyx_2504
         VL_DBG_MSGF("         No triggers active\n");
     }
     if ((1ULL & vlSelf->__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 0 is active: @(negedge clk)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 0 is active: @(posedge clk or posedge rst)\n");
     }
     if ((2ULL & vlSelf->__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 1 is active: @(posedge clk or posedge rst)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 1 is active: @(posedge clk)\n");
     }
 }
 #endif  // VL_DEBUG
@@ -741,7 +741,6 @@ VL_ATTR_COLD void Vysyx_25040101_riscv___024root___ctor_var_reset(Vysyx_25040101
     vlSelf->ysyx_25040101_riscv__DOT__srca_data = VL_RAND_RESET_I(32);
     vlSelf->ysyx_25040101_riscv__DOT__srcb_data = VL_RAND_RESET_I(32);
     vlSelf->ysyx_25040101_riscv__DOT__reg_a0 = VL_RAND_RESET_I(32);
-    vlSelf->ysyx_25040101_riscv__DOT__pc_reg1__DOT__next_pc = VL_RAND_RESET_I(32);
     for (int __Vi0 = 0; __Vi0 < 2; ++__Vi0) {
         vlSelf->ysyx_25040101_riscv__DOT__mux_pc_srca1__DOT__mux_pc_srca__DOT__i0__DOT__pair_list[__Vi0] = VL_RAND_RESET_Q(33);
     }
@@ -779,10 +778,7 @@ VL_ATTR_COLD void Vysyx_25040101_riscv___024root___ctor_var_reset(Vysyx_25040101
     for (int __Vi0 = 0; __Vi0 < 31; ++__Vi0) {
         vlSelf->ysyx_25040101_riscv__DOT__regs1__DOT__regs[__Vi0] = VL_RAND_RESET_I(32);
     }
-    vlSelf->ysyx_25040101_riscv__DOT__regs1__DOT__rd_data = VL_RAND_RESET_I(32);
-    vlSelf->ysyx_25040101_riscv__DOT__regs1__DOT__rd_addr = VL_RAND_RESET_I(5);
-    vlSelf->ysyx_25040101_riscv__DOT__regs1__DOT__rd_wen = VL_RAND_RESET_I(1);
-    vlSelf->ysyx_25040101_riscv__DOT__regs1__DOT____Vlvbound_he253d8b9__0 = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25040101_riscv__DOT__regs1__DOT____Vlvbound_h966ba230__0 = VL_RAND_RESET_I(32);
     vlSelf->ysyx_25040101_riscv__DOT__ctrl_unit1__DOT__is_I_op = VL_RAND_RESET_I(1);
     vlSelf->ysyx_25040101_riscv__DOT__ctrl_unit1__DOT__is_I_system = VL_RAND_RESET_I(1);
     vlSelf->ysyx_25040101_riscv__DOT__ctrl_unit1__DOT__is_I_jalr = VL_RAND_RESET_I(1);

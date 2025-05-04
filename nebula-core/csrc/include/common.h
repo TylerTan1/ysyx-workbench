@@ -20,7 +20,7 @@ struct SimulationContext {
 	std::unique_ptr<VerilatedFstC> trace;				 // wave trace	
 	std::unique_ptr<VerilatedContext> context;   //	sim environment 
 	std::string img_file;												 // image file
-	std::vector<word_t> rom;							 			 // memory
+	std::vector<uint8_t> rom;							 			 // memory
 	
 	/* allocate memory and open trace */
 	void init_hardware() {

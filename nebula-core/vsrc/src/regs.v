@@ -30,20 +30,10 @@ module ysyx_25040101_regs (
 	assign rs1_data_o = (rs1_addr_i == 0) ? 0 : regs[rs1_addr_i];
 	assign rs2_data_o = (rs2_addr_i == 0) ? 0 : regs[rs2_addr_i];
 
-	/* 防止verilator仿真导致的时序竞争的问题 */
-	reg[31:0] rd_data;
-	reg[4:0] rd_addr;
-	reg rd_wen;
-	always @(negedge clk) begin
-		rd_data <= rd_data_i;
-		rd_addr <= rd_addr_i;
-		rd_wen <= rd_wen_i;
-	end
-
 	/* write */
-  always @(posedge clk or posedge rst) begin
-		if (rd_wen && rd_addr != 0) 
-			regs[rd_addr] <= rd_data;
+  always @(posedge clk) begin
+		if (rd_wen_i && rd_addr_i != 0) 
+			regs[rd_addr_i] <= rd_data_i;
 		else ;
   end
 endmodule

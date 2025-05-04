@@ -35,10 +35,12 @@ void utils::init_disasm() {
   assert(ret == CS_ERR_OK);
 }
 
+uint32_t last_pc = 0x80000000;
 std::string disasm(SimulationContext& ctx) {
 	cs_insn *insn;
-	size_t count = csdisasm(handle, (uint8_t *)&ctx.dut->inst, 8, ctx.dut->pc, 0, &insn);
+	size_t count = csdisasm(handle, (uint8_t *)&ctx.dut->inst, 8, last_pc, 0, &insn);
 	assert(count == 1);
+	last_pc = ctx.dut->pc;
 
 	std::ostringstream oss;
 	oss << "0x" << std::hex << std::setw(8) << std::setfill('0') << insn[0].address

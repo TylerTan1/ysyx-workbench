@@ -27,8 +27,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vysyx_25040101_riscv___024root final : public
         CData/*0:0*/ ysyx_25040101_riscv__DOT__mux_pc_srca1__DOT__mux_pc_srca__DOT__i0__DOT__hit;
         CData/*0:0*/ ysyx_25040101_riscv__DOT__mux_pc_srcb1__DOT__mux_pc_srcb__DOT__i0__DOT__hit;
         CData/*0:0*/ ysyx_25040101_riscv__DOT__pc_plus1__DOT__mux_extend__DOT__i0__DOT__hit;
-        CData/*4:0*/ ysyx_25040101_riscv__DOT__regs1__DOT__rd_addr;
-        CData/*0:0*/ ysyx_25040101_riscv__DOT__regs1__DOT__rd_wen;
         CData/*0:0*/ ysyx_25040101_riscv__DOT__ctrl_unit1__DOT__is_I_op;
         CData/*0:0*/ ysyx_25040101_riscv__DOT__ctrl_unit1__DOT__is_I_system;
         CData/*0:0*/ ysyx_25040101_riscv__DOT__ctrl_unit1__DOT__is_I_jalr;
@@ -62,13 +60,11 @@ class alignas(VL_CACHE_LINE_BYTES) Vysyx_25040101_riscv___024root final : public
         IData/*31:0*/ ysyx_25040101_riscv__DOT__srca_data;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__srcb_data;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__reg_a0;
-        IData/*31:0*/ ysyx_25040101_riscv__DOT__pc_reg1__DOT__next_pc;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__mux_pc_srca1__DOT__mux_pc_srca__DOT__i0__DOT__lut_out;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__mux_pc_srcb1__DOT__mux_pc_srcb__DOT__i0__DOT__lut_out;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__pc_plus1__DOT__pc_plus_result;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__pc_plus1__DOT__mux_extend__DOT__i0__DOT__lut_out;
-        IData/*31:0*/ ysyx_25040101_riscv__DOT__regs1__DOT__rd_data;
-        IData/*31:0*/ ysyx_25040101_riscv__DOT__regs1__DOT____Vlvbound_he253d8b9__0;
+        IData/*31:0*/ ysyx_25040101_riscv__DOT__regs1__DOT____Vlvbound_h966ba230__0;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__extend1__DOT__mux_extend__DOT__i0__DOT__lut_out;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__mux_srca1__DOT__mux_srca__DOT__i0__DOT__lut_out;
         IData/*31:0*/ ysyx_25040101_riscv__DOT__mux_srcb1__DOT__mux_srcb__DOT__i0__DOT__lut_out;
@@ -80,12 +76,12 @@ class alignas(VL_CACHE_LINE_BYTES) Vysyx_25040101_riscv___024root final : public
         VlUnpacked<IData/*31:0*/, 2> ysyx_25040101_riscv__DOT__mux_pc_srca1__DOT__mux_pc_srca__DOT__i0__DOT__data_list;
         VlUnpacked<QData/*32:0*/, 2> ysyx_25040101_riscv__DOT__mux_pc_srcb1__DOT__mux_pc_srcb__DOT__i0__DOT__pair_list;
         VlUnpacked<CData/*0:0*/, 2> ysyx_25040101_riscv__DOT__mux_pc_srcb1__DOT__mux_pc_srcb__DOT__i0__DOT__key_list;
-    };
-    struct {
         VlUnpacked<IData/*31:0*/, 2> ysyx_25040101_riscv__DOT__mux_pc_srcb1__DOT__mux_pc_srcb__DOT__i0__DOT__data_list;
         VlUnpacked<QData/*32:0*/, 2> ysyx_25040101_riscv__DOT__pc_plus1__DOT__mux_extend__DOT__i0__DOT__pair_list;
         VlUnpacked<CData/*0:0*/, 2> ysyx_25040101_riscv__DOT__pc_plus1__DOT__mux_extend__DOT__i0__DOT__key_list;
         VlUnpacked<IData/*31:0*/, 2> ysyx_25040101_riscv__DOT__pc_plus1__DOT__mux_extend__DOT__i0__DOT__data_list;
+    };
+    struct {
         VlUnpacked<IData/*31:0*/, 31> ysyx_25040101_riscv__DOT__regs1__DOT__regs;
         VlUnpacked<QData/*36:0*/, 5> ysyx_25040101_riscv__DOT__extend1__DOT__mux_extend__DOT__i0__DOT__pair_list;
         VlUnpacked<CData/*4:0*/, 5> ysyx_25040101_riscv__DOT__extend1__DOT__mux_extend__DOT__i0__DOT__key_list;

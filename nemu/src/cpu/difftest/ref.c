@@ -20,12 +20,13 @@
 
 void paddr_write(paddr_t addr, int len, word_t data);
 
-__EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
+__EXPORT void difftest_memcpy(paddr_t addr, uint8_t *buf, size_t n, bool direction) {
 	if (direction == DIFFTEST_TO_DUT) assert(0);		
-	uint8_t *mem_ptr = (uint8_t*) buf;
-	for (int i = 0; i < n ; i++) {
-		paddr_write(addr, 1, *mem_ptr);
-		buf += 8;
+	uint8_t *ptr = buf;
+	for (int i = 0; i < n; i++) {
+		paddr_write(addr, 1, *ptr);
+		addr++;
+		ptr++;
 	}
 }
 

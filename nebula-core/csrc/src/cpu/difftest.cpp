@@ -9,7 +9,7 @@
 
 #ifdef CONFIG_DIFFTEST
 
-typedef void (*dl_difftest_memcpy)(word_t, void*, size_t, bool);
+typedef void (*dl_difftest_memcpy)(word_t, uint8_t*, size_t, bool);
 typedef void (*dl_difftest_regcpy)(uint32_t*, bool);
 typedef void (*dl_difftest_exec)(uint64_t);
 typedef void (*dl_difftest_init)();
@@ -41,7 +41,7 @@ void cpu::init_difftest(SimulationContext& ctx, char *ref_so_file, long img_size
 
   ref_difftest_init();
 
-	void *ptr = (void *)&ctx.rom[0];
+	uint8_t *ptr = (uint8_t *)&ctx.rom[0];
   ref_difftest_memcpy(0x80000000, ptr, img_size, DIFFTEST_TO_REF);
 
 	word_t regs[32];
@@ -75,7 +75,7 @@ static int checkregs(SimulationContext& ctx, uint32_t* regs) {
 	std::cout << "PC        0x" << std::hex << std::setw(8) << std::setfill('0') << regs[0]
 						<< "    ";
 	if (dif[0]) std::cout << RED;
-  std::cout	<< "0x" << std::hex << std::setw(8) << std::setfill('0') << ctx.dut->pc 
+  std::cout	<< "0x" << std::hex << std::setw(8) << std::setfill('0') << std::right << ctx.dut->pc 
 						<< RESET_COLOR << std::endl;
 	/* output reg[0] */
 	std::cout << std::left << std::setw(10) << std::setfill(' ') << registers[0] 
@@ -86,7 +86,7 @@ static int checkregs(SimulationContext& ctx, uint32_t* regs) {
 	/* output reg[1] to reg[31] and highlight those different from ref */
 	for (int i = 0; i < 31; i++) {
 		std::cout << std::left << std::setw(10) << std::setfill(' ') << registers[i + 1] 
-							<< "0x" << std::hex << std::setw(8) << std::setfill('0') << regs[i + 1] << "    ";
+							<< std::right << "0x" << std::hex << std::setw(8) << std::setfill('0') << regs[i + 1] << "    ";
 		if (dif[i + 1]) std::cout << RED;	
 		std::cout << "0x" << std::hex << std::setw(8) << std::setfill('0') << ctx.dut->regs_data[i]
 							<< RESET_COLOR << std::endl;
@@ -102,6 +102,6 @@ int difftest_step(SimulationContext& ctx) {
 	return checkregs(ctx, regs);	
 }
 #else
-void cpu::init_difftest(char *ref_so_file, long img_size) { return; };
+void cpu::init_difftest(SimulationContext& ctx, char *ref_so_file, long img_size) { return; };
 int difftest_step(SimulationContext& ctx) { return 0; };
 #endif

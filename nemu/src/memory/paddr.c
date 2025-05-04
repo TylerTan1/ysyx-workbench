@@ -52,7 +52,6 @@ void init_mem() {
 
 word_t paddr_read(paddr_t addr, int len) {
 #ifdef CONFIG_MTRACE_READ
-	printf("Read  %d bytes from ", len);
 	printf(FMT_WORD, addr);
 	printf("\n");
 #endif

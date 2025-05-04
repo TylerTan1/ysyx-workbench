@@ -1,8 +1,8 @@
 module ysyx_25040101_ctrl_unit(
 	/* from rom */
-	input wire[6:0] opcode_i,
-	input wire[2:0] func3_i,
-	input wire		  func7_i,
+	input wire[6:0]  opcode_i,
+	input wire[2:0]  func3_i,
+	input wire		   func7_i,
 	/* to alu */
 	output wire[1:0] alu_ctrl_o,
 	/* to mux_srca */
@@ -23,15 +23,15 @@ module ysyx_25040101_ctrl_unit(
 	output wire 		 is_ebreak_o
 );
 	/* opcode handle */
-	wire opcode_1_0_11 = (opcode_i[1:0] == 2'b11);
+	wire opcode_1_0_11  = (opcode_i[1:0] == 2'b11);
 	wire opcode_4_2_000 = (opcode_i[4:2] == 3'b000);
 	wire opcode_4_2_001 = (opcode_i[4:2] == 3'b001);
 	wire opcode_4_2_011 = (opcode_i[4:2] == 3'b011);
 	wire opcode_4_2_100 = (opcode_i[4:2] == 3'b100);
 	wire opcode_4_2_101 = (opcode_i[4:2] == 3'b101);
-	wire opcode_6_5_00 = (opcode_i[6:5] == 2'b00);
-	wire opcode_6_5_01 = (opcode_i[6:5] == 2'b01);
-	wire opcode_6_5_11 = (opcode_i[6:5] == 2'b11);
+	wire opcode_6_5_00  = (opcode_i[6:5] == 2'b00);
+	wire opcode_6_5_01  = (opcode_i[6:5] == 2'b01);
+	wire opcode_6_5_11  = (opcode_i[6:5] == 2'b11);
 
 	/* func3 handle */
 	wire func3_000 = (func3_i == 3'b000);
@@ -42,16 +42,16 @@ module ysyx_25040101_ctrl_unit(
 /*------------------------------------------------------------*/
 
 	/* instruction classification */
-	wire is_R = (opcode_1_0_11 && opcode_6_5_01 && opcode_4_2_100);
-	wire is_I_op = (opcode_1_0_11 && opcode_6_5_00 && opcode_4_2_100);
-	wire is_I_load = (opcode_1_0_11 && opcode_6_5_00 && opcode_4_2_000);
+	wire is_R 			 = (opcode_1_0_11 && opcode_6_5_01 && opcode_4_2_100);
+	wire is_I_op 		 = (opcode_1_0_11 && opcode_6_5_00 && opcode_4_2_100);
+	wire is_I_load   = (opcode_1_0_11 && opcode_6_5_00 && opcode_4_2_000);
 	wire is_I_system = (opcode_1_0_11 && opcode_6_5_11 && opcode_4_2_100);
-	wire is_I_jalr = (opcode_1_0_11 && opcode_6_5_11 && opcode_4_2_001);
-	wire is_S = (opcode_1_0_11 && opcode_6_5_01 && opcode_4_2_000);
-	wire is_B = (opcode_1_0_11 && opcode_6_5_11 && opcode_4_2_000);
-	wire is_U_lui = (opcode_1_0_11 && opcode_6_5_01 && opcode_4_2_101);
-	wire is_U_auipc = (opcode_1_0_11 && opcode_6_5_00 && opcode_4_2_101);
-	wire is_J = (opcode_1_0_11 && opcode_6_5_11 && opcode_4_2_011);
+	wire is_I_jalr   = (opcode_1_0_11 && opcode_6_5_11 && opcode_4_2_001);
+	wire is_S 			 = (opcode_1_0_11 && opcode_6_5_01 && opcode_4_2_000);
+	wire is_B 		   = (opcode_1_0_11 && opcode_6_5_11 && opcode_4_2_000);
+	wire is_U_lui 	 = (opcode_1_0_11 && opcode_6_5_01 && opcode_4_2_101);
+	wire is_U_auipc  = (opcode_1_0_11 && opcode_6_5_00 && opcode_4_2_101);
+	wire is_J        = (opcode_1_0_11 && opcode_6_5_11 && opcode_4_2_011);
 
 /*------------------------------------------------------------*/
 
