@@ -17,7 +17,7 @@ run: sim
 run-batch: sim
 	@$(NPC_EXEC) -b
 
-wave: run-batch
+wave: 
 	@gtkwave $(OBJ_DIR)/waveform.fst
 
 clean-tools = $(dir $(shell find ./tools -maxdepth 2 -mindepth 2 -name "Makefile"))

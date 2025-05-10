@@ -1,6 +1,9 @@
 #include <memory.h>
+#include <generated/autoconf.h>
 
 #include <fstream>
+
+uint8_t *rom = NULL;			
 
 /* initialize memory and load img */
 size_t memory::init_rom(SimulationContext& ctx) {
@@ -12,16 +15,20 @@ size_t memory::init_rom(SimulationContext& ctx) {
 		0x00100073	// ebreak
 	};
 
+	const size_t rom_size = 0x08000000; 
+  ctx.rom.resize(rom_size, 0); 
+
 	if (ctx.img_file.empty()) {			
 		/* load default instructions */
 		std::cout << "Loading default instructions..." << std::endl;
- 	  for (const auto& inst : insts) {
-      ctx.rom.push_back((inst >> 0) & 0xFF);  
-      ctx.rom.push_back((inst >> 8) & 0xFF);
-      ctx.rom.push_back((inst >> 16) & 0xFF);
-      ctx.rom.push_back((inst >> 24) & 0xFF); 
+ 		size_t offset = 0;
+    for (const auto& inst : insts) {
+      ctx.rom[offset++] = (inst >> 0) & 0xFF;
+      ctx.rom[offset++] = (inst >> 8) & 0xFF;
+      ctx.rom[offset++] = (inst >> 16) & 0xFF;
+      ctx.rom[offset++] = (inst >> 24) & 0xFF;
     }
-		return ctx.rom.size();
+		return insts.size() * sizeof(word_t); // return 16;
 	}
 
 	/* open image file */
@@ -33,16 +40,15 @@ size_t memory::init_rom(SimulationContext& ctx) {
 	file.seekg(0, std::ios::end);
 	const size_t file_size = file.tellg();
 	file.seekg(0, std::ios::beg);			 
-	
-	uint32_t num_addr = file_size / sizeof(uint8_t);
-	std::cout << "Initializing memory from 0x80000000 to 0x" 
-						<< std::hex << 0x80000000 + num_addr << std::endl;
-	/* define rom based on the size of the file */	
-	ctx.rom.resize(num_addr);
+	assert(rom_size > file_size);
 
 	/* load the img file */
 	file.read(reinterpret_cast<char*>(ctx.rom.data()), file_size);
 	if (!file) throw std::runtime_error("Failed to read file: " + ctx.img_file);
+
+	/* get the pointer for other functions */
+	rom = (uint8_t *)ctx.rom.data(); 
+
 	return file_size;
 }
 
@@ -54,7 +60,7 @@ static word_t guest_to_host(word_t address) {
 /* set inst based on pc */
 word_t memory::read(word_t address, SimulationContext& ctx) {
 	word_t paddr = guest_to_host(address);
-	if (paddr + 3 >= ctx.rom.size()) {
+	if (paddr + 3 >= ctx.rom.size() || paddr < 0) {
     throw std::out_of_range("Address out of range");
   }
 	word_t inst = 0;
@@ -65,3 +71,35 @@ word_t memory::read(word_t address, SimulationContext& ctx) {
 
 	return inst;
 }
+
+extern "C" int pmem_read(int raddr, int num_byte, bool sext) {
+#ifdef CONFIG_MTRACE_READ
+	printf("read memory %d bytes from address 0x%x", num_byte, raddr);
+#endif
+	assert(num_byte <= 4 || num_byte > 0);
+	word_t paddr = guest_to_host(raddr);
+
+	word_t data = 0;
+	for (int i = 0; i < num_byte; i++) {
+		data |= rom[paddr + i] << 8 * i;
+	}
+	if (sext) {
+  	int shift = (4 - num_byte) * 8;
+  	data = (int32_t)(data << shift) >> shift;
+	}
+#ifdef CONFIG_MTRACE_READ
+	printf(" = 0x%x\n", data);
+#endif
+	return data;
+}
+
+extern "C" void pmem_write(int waddr, int data, int num_byte) {
+#ifdef CONFIG_MTRACE_WRITE
+	printf("write 0x%x into memory 0x%x\n", data, waddr);
+#endif
+	assert(num_byte <= 4 || num_byte > 0);
+	word_t paddr = guest_to_host(waddr);
+	for (int i = 0; i < num_byte; i++) {
+		rom[paddr + i] = (data >> 8 * i) & 0xFF;
+	}
+}		

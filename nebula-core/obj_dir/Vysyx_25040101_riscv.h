@@ -9,6 +9,7 @@
 #define VERILATED_VYSYX_25040101_RISCV_H_  // guard
 
 #include "verilated.h"
+#include "svdpi.h"
 
 class Vysyx_25040101_riscv__Syms;
 class Vysyx_25040101_riscv___024root;

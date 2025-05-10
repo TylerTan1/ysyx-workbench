@@ -5,7 +5,7 @@
 
 #include "difftest.h"
 
-const int max_print = 10;
+const int max_print = 100;
 
 /* trace the wave of simulation */
 static void trace(SimulationContext& ctx) {
@@ -15,11 +15,11 @@ static void trace(SimulationContext& ctx) {
 
 /* send clock signal to execute once */
 static void exe_once(SimulationContext& ctx) {
-	ctx.dut->clk = 0;
+	ctx.dut->clk = 1;
 	ctx.dut->eval();
 	trace(ctx);
 
-	ctx.dut->clk = 1;
+	ctx.dut->clk = 0;
 	ctx.dut->eval();
 	trace(ctx);
 }
@@ -45,7 +45,7 @@ static void print_info(SimulationContext& ctx) {
 	if (!ctx.dut->regs_data[9]) {
 		std::cout << GREEN << "Hit Good Trap ";
 	} else {
-		std::cout << RED << "[31mHit Bad Trap ";
+		std::cout << RED << "Hit Bad Trap ";
 	}
 	std::cout << YELLOW << "at pc = 0x" << ss.str() << RESET_COLOR << std::endl;
 }
@@ -57,7 +57,6 @@ int cpu::execute(uint32_t steps, SimulationContext& ctx) {
 	/* send clock signal and execute untill ebreak */
 	for (uint32_t i = 0; i < steps; i++) {
 		ctx.dut->inst = memory::read(ctx.dut->pc, ctx);
-		exe_once(ctx);
 		/* output instructions being executed */
 		if (print_inst) {
 			utils::print_disasm(ctx);
@@ -65,6 +64,7 @@ int cpu::execute(uint32_t steps, SimulationContext& ctx) {
 #ifdef CONFIG_ITRACE
 		utils::record_log(ctx);
 #endif
+		exe_once(ctx);
 
 #ifdef CONFIG_DIFFTEST
 		if (difftest_step(ctx) != 0) return -1; 

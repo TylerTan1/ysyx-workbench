@@ -10,24 +10,41 @@ module ysyx_25040101_riscv(
 	output wire is_ebreak
 );
 	wire[31:0] next_pc;
+	wire[31:0] tmp_rd_data;
 	wire[31:0] rd_data;
 	wire			 rd_wen;
 	wire[31:0] rs1_data;
 	wire[31:0] rs2_data;
-	wire[1:0]	 alu_ctrl;
+	wire[31:0] alu_result;
+	wire 			 borrow;
+	wire			 sub_overflow;
+	wire[7:0]	 alu_ctrl;
 	wire[1:0]	 srca_ctrl;
-	wire[1:0]	 srcb_ctrl;
+	wire[2:0]	 srcb_ctrl;
 	wire			 pc_ctrl;
 	wire			 pc_srca_ctrl;
 	wire			 pc_srcb_ctrl;
+	wire 			 pc_imm_ctrl;
+	wire			 read_1B_mem_en;
+	wire			 read_2B_mem_en;
+	wire 			 read_2B_sext_mem_en;
+	wire			 read_4B_mem_en;
+	wire			 write_1B_mem_en;
+	wire			 write_2B_mem_en;
+	wire			 write_4B_mem_en;
+	wire 			 rd_unsigned_less_ctrl;
+	wire 			 less_ctrl;
+	wire			 less_unsigned_ctrl;
+	wire 			 nless_ctrl;
+	wire			 nless_unsigned_ctrl;
+	wire			 ieq_ctrl;
+	wire 			 eq_ctrl;
 	wire[31:0] pc_srca;
 	wire[31:0] pc_srcb;
-	wire[4:0]  imm_type;
+	wire[5:0]  imm_type;
 	wire[31:0] imm;
 	wire[31:0] srca_data;
 	wire[31:0] srcb_data;
-	wire[31:0] reg_a0;
-
 
 	ysyx_25040101_pc_reg pc_reg1(
 		.clk(clk),
@@ -46,6 +63,7 @@ module ysyx_25040101_riscv(
 	ysyx_25040101_mux_pc_srcb mux_pc_srcb1(
 		.imm_i(imm),
 		.pc_srcb_ctrl_i(pc_srcb_ctrl),
+		.pc_imm_ctrl_i(pc_imm_ctrl),
 		.pc_srcb_o(pc_srcb)
 	);
 
@@ -81,7 +99,21 @@ module ysyx_25040101_riscv(
 		.pc_srcb_ctrl_o(pc_srcb_ctrl),
 		.imm_type_o(imm_type),
 		.rd_wen_o(rd_wen),
-		.is_ebreak_o(is_ebreak)
+		.is_ebreak_o(is_ebreak),
+		.read_1B_mem_en_o(read_1B_mem_en),
+		.read_2B_mem_en_o(read_2B_mem_en),
+		.read_2B_sext_mem_en_o(read_2B_sext_mem_en),
+		.read_4B_mem_en_o(read_4B_mem_en),
+		.write_1B_mem_en_o(write_1B_mem_en),
+		.write_2B_mem_en_o(write_2B_mem_en),
+		.write_4B_mem_en_o(write_4B_mem_en),
+		.rd_unsigned_less_ctrl_o(rd_unsigned_less_ctrl),
+		.less_ctrl_o(less_ctrl),
+		.less_unsigned_ctrl_o(less_unsigned_ctrl),
+		.nless_ctrl_o(nless_ctrl),
+		.nless_unsigned_ctrl_o(nless_unsigned_ctrl),
+		.ieq_ctrl_o(ieq_ctrl),
+		.eq_ctrl_o(eq_ctrl)
 	);
 
 	ysyx_25040101_extend extend1(
@@ -108,6 +140,37 @@ module ysyx_25040101_riscv(
 		.srca_data_i(srca_data),
 		.srcb_data_i(srcb_data),
 		.alu_ctrl_i(alu_ctrl),
-		.alu_result_o(rd_data)
+		.alu_result_o(alu_result),
+		.borrow_o(borrow),
+		.sub_overflow_o(sub_overflow)
 	);
+
+	ysyx_25040101_alu_memio_handle alu_memio_handle1(
+		.read_1B_mem_en_i(read_1B_mem_en),
+		.read_2B_mem_en_i(read_2B_mem_en),
+		.read_2B_sext_mem_en_i(read_2B_sext_mem_en),
+		.read_4B_mem_en_i(read_4B_mem_en),
+		.write_1B_mem_en_i(write_1B_mem_en),
+		.write_2B_mem_en_i(write_2B_mem_en),
+		.write_4B_mem_en_i(write_4B_mem_en),
+		.alu_result_i(alu_result),
+		.rs2_data_i(rs2_data),
+		.tmp_rd_data_o(tmp_rd_data)
+	);
+
+	ysyx_25040101_alu_result_handle alu_result_handle1(
+		.borrow_i(borrow),
+		.sub_overflow_i(sub_overflow),
+		.tmp_rd_data_i(tmp_rd_data),
+		.rd_unsigned_less_ctrl_i(rd_unsigned_less_ctrl),
+		.less_ctrl_i(less_ctrl),
+		.less_unsigned_ctrl_i(less_unsigned_ctrl),
+		.nless_ctrl_i(nless_ctrl),
+		.nless_unsigned_ctrl_i(nless_unsigned_ctrl),
+		.ieq_ctrl_i(ieq_ctrl),
+		.eq_ctrl_i(eq_ctrl),
+		.rd_data_o(rd_data),
+		.pc_imm_ctrl_o(pc_imm_ctrl)
+	);
+
 endmodule

@@ -41,8 +41,8 @@ void cpu::init_difftest(SimulationContext& ctx, char *ref_so_file, long img_size
 
   ref_difftest_init();
 
-	uint8_t *ptr = (uint8_t *)&ctx.rom[0];
-  ref_difftest_memcpy(0x80000000, ptr, img_size, DIFFTEST_TO_REF);
+	uint8_t *rom_ptr = (uint8_t *)ctx.rom.data();
+  ref_difftest_memcpy(0x80000000, rom_ptr, img_size, DIFFTEST_TO_REF);
 
 	word_t regs[32];
 	regs[0] = ctx.dut->pc;

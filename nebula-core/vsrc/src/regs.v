@@ -8,10 +8,10 @@ module ysyx_25040101_regs (
 	input wire[4:0] rs1_addr_i,
 	input wire[4:0] rs2_addr_i,
 	/* from ctrl_unit */
-  input rd_wen_i,
+  input wire rd_wen_i,
 	/* to mux_srca, mux_pc_srca */
 	output wire[31:0] rs1_data_o,
-	/* to mux_srcb */
+	/* to mux_srcb, alu_result_handle */
 	output wire[31:0] rs2_data_o,
 	/* to top */
 	output wire[31:1][31:0] regs_data_o
@@ -24,7 +24,7 @@ module ysyx_25040101_regs (
 		for (i = 1; i < 32; i = i + 1) begin
 			assign regs_data_o[i] = regs[i];
 		end
-	endgenerate
+	endgenerate 
 
 	/* read */
 	assign rs1_data_o = (rs1_addr_i == 0) ? 0 : regs[rs1_addr_i];
@@ -32,8 +32,8 @@ module ysyx_25040101_regs (
 
 	/* write */
   always @(posedge clk) begin
-		if (rd_wen_i && rd_addr_i != 0) 
+		if (rd_wen_i && rd_addr_i != 0) begin
 			regs[rd_addr_i] <= rd_data_i;
-		else ;
+		end
   end
 endmodule

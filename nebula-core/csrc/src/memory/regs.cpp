@@ -10,11 +10,11 @@ const std::string registers[] = {
 };
 
 void memory::display_regs(SimulationContext& ctx) {
-	std::cout << std::setw(8) << std::left << registers[0] 
-						<< std::setw(8) << 0 << std::endl;
+	std::cout << std::setw(8) << std::setfill(' ') << std::left << registers[0] 
+						<< "0x" << std::hex << std::setw(8) << 0 << std::endl;
 
 	for  (int i = 1; i < 32; i++) {
 		std::cout << std::setw(8) << std::left << registers[i] 
-							<< std::setw(8) << ctx.dut->regs_data[i - 1] << std::endl; 
+							<< "0x" << std::hex << std::setw(8) << ctx.dut->regs_data[i - 1] << std::endl; 
 	}	
 }
