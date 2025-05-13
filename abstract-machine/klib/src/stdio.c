@@ -26,25 +26,62 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 
 			switch (*fmt) {
 				case 'd': case 'i':
-					int num = va_arg(ap, int);
-					if (num < 0) {
+					int d = va_arg(ap, int);
+					if (d < 0) {
 						*out++ = '-';
-					 	num = (unsigned int)(-(long)num);
+					 	d = (unsigned int)(-(long)d);
 						width--;
 					}
 
-					char buffer[32];
-					int len = 0;
+					char dbuffer[32];
+					int dlen = 0;
 					do {
-						buffer[len++] = '0' + num % 10;
-						num /= 10;
-					} while (num != 0);
+						dbuffer[dlen++] = '0' + d % 10;
+						d /= 10;
+					} while (d != 0);
 
-					for (int i = len; i < width; i++) 
+					for (int i = dlen; i < width; i++) 
 						*out++ = pad_char;
 
-					for (int i = len - 1; i >= 0; i--) 
-						*out++ = buffer[i];
+					for (int i = dlen - 1; i >= 0; i--) 
+						*out++ = dbuffer[i];
+					break;
+
+				case 'u':
+					unsigned int u = va_arg(ap, unsigned int);
+
+					char ubuffer[32];
+					int ulen = 0;
+					do {
+						ubuffer[ulen++] = '0' + u % 10;
+						u /= 10;
+					} while (u != 0);
+
+					for (int i = ulen; i < width; i++) 
+						*out++ = pad_char;
+
+					for (int i = ulen - 1; i >= 0; i--) 
+						*out++ = ubuffer[i];
+					break;
+
+				case 'x':
+					unsigned int x = va_arg(ap, unsigned int);
+					char xbuffer[32];
+					int xlen = 0;
+
+					const char *hex_digits = "0123456789abcdef";
+					do {
+						xbuffer[xlen++] = hex_digits[x % 16];
+						x /= 16;
+					} while (x != 0);
+
+					for (int i = xlen; i < width; i++) {
+						*out++ = pad_char;
+					}
+
+					for (int i = xlen - 1; i < width; i++) {
+						*out++ = xbuffer[i];
+					}
 					break;
 
 				case 's': 
@@ -63,7 +100,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           break;
 
 				default:
-					panic("Not implemented");
+					putch('%');
+					putch(*fmt);
+					panic("sprintf not implemented");
 					break;
 			}
 			fmt++;

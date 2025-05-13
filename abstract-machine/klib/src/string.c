@@ -17,7 +17,7 @@ char *strcpy(char *dst, const char *src) {
 		*(dst + tmp) = *(src + tmp);
 		tmp++;
 	}
-	*(dst + tmp + 1) = '\0'; 
+	*(dst + tmp) = '\0'; 
 	return dst;
 }
 
@@ -47,8 +47,9 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 
 void *memset(void *s, int c, size_t n) {
 	char *s_char = (char *)s;
+	unsigned char byte = (unsigned char)c;
 	for (int i = 0; i < n; i++) 
-		*(s_char + i) = c;
+		s_char[i] = byte;
 	return s;
 }
 

@@ -38,9 +38,10 @@ void *malloc(size_t size) {
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
 	static bool not_init = true;
 	if (not_init) {
-		hbrk = heap.start;
+		hbrk = (void *)ROUNDUP(heap.start, 8);
 		not_init = false;
 	}
+	size = (size_t)ROUNDUP(size, 8);
   char *old = hbrk;
   hbrk += size;
   assert((uintptr_t)heap.start <= (uintptr_t)hbrk && (uintptr_t)hbrk < (uintptr_t)heap.end);

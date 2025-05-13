@@ -1,7 +1,5 @@
 #include <monitor.h>
 
-/* initialize the context */
-
 int main(int argc, char *argv[]) {
 	/* declare the simulation environment */
 	SimulationContext ctx;
