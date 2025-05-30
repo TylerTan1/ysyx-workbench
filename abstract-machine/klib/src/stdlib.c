@@ -38,16 +38,14 @@ void *malloc(size_t size) {
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
 	static bool not_init = true;
 	if (not_init) {
-		hbrk = (void *)ROUNDUP(heap.start, 8);
+		hbrk = (char *)ROUNDUP(heap.start, 8);
 		not_init = false;
 	}
 	size = (size_t)ROUNDUP(size, 8);
   char *old = hbrk;
   hbrk += size;
-  assert((uintptr_t)heap.start <= (uintptr_t)hbrk && (uintptr_t)hbrk < (uintptr_t)heap.end);
-  for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)hbrk; p++) {
-    *p = 0;
-  }
+	putch('e');
+  assert((uintptr_t)hbrk <= (uintptr_t)heap.end);
   return old;
 #endif
   return NULL;

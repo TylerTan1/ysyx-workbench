@@ -166,6 +166,16 @@ config FTRACE
 	bool "Enable function tracer"
 	default n
 
+config DTRACE_READ
+	depends on TRACE
+	bool "Enable device read tracer"
+	default n
+
+config DTRACE_WRITE
+	depends on TRACE
+	bool "Enable device write tracer"
+	default n
+
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"

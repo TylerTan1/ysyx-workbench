@@ -57,8 +57,12 @@ static word_t guest_to_host(word_t address) {
 	return (address < 0x80000000) ? 0 : address - 0x80000000;
 }
 
+static bool have_read;
+static word_t last_data;
+
 /* set inst based on pc */
 word_t memory::read(word_t address, SimulationContext& ctx) {
+	have_read = false;
 	word_t paddr = guest_to_host(address);
 	if (paddr + 3 >= ctx.rom.size() || paddr < 0) {
     throw std::out_of_range("Address out of range");
@@ -72,7 +76,8 @@ word_t memory::read(word_t address, SimulationContext& ctx) {
 	return inst;
 }
 
-extern "C" int pmem_read(int raddr, int num_byte, bool sext) {
+extern "C" word_t pmem_read(word_t raddr, int num_byte, bool sext) {
+	if (have_read) return last_data;
 #ifdef CONFIG_MTRACE_READ
 	printf("read memory %d bytes from address 0x%x", num_byte, raddr);
 #endif
@@ -87,13 +92,15 @@ extern "C" int pmem_read(int raddr, int num_byte, bool sext) {
   	int shift = (4 - num_byte) * 8;
   	data = (int32_t)(data << shift) >> shift;
 	}
+	last_data = data;
+	have_read = true;
 #ifdef CONFIG_MTRACE_READ
 	printf(" = 0x%x\n", data);
 #endif
 	return data;
 }
 
-extern "C" void pmem_write(int waddr, int data, int num_byte) {
+extern "C" void pmem_write(word_t waddr, word_t data, int num_byte) {
 #ifdef CONFIG_MTRACE_WRITE
 	printf("write 0x%x into memory 0x%x\n", data, waddr);
 #endif

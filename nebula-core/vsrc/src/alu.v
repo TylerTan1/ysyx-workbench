@@ -29,6 +29,7 @@ module ysyx_25040101_alu(
 	wire[31:0] result_bit_or = srca_data_i | srcb_data_i;
 	wire[31:0] result_bit_xor = srca_data_i ^ srcb_data_i;
 
+	/* TODO optimize */
 	mux #(
 		.NR_KEY(8),
 		.KEY_LEN(8),

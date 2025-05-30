@@ -34,6 +34,7 @@ module ysyx_25040101_regs (
   always @(posedge clk) begin
 		if (rd_wen_i && rd_addr_i != 0) begin
 			regs[rd_addr_i] <= rd_data_i;
+			// $display("  write %x in reg %d", rd_data_i, rd_addr_i);
 		end
   end
 endmodule

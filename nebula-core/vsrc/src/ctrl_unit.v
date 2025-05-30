@@ -97,6 +97,7 @@ module ysyx_25040101_ctrl_unit(
 	wire is_addi = (is_I_op && func3_000);
 	wire is_sltiu = (is_I_op && func3_011);
 	wire is_xori = (is_I_op && func3_100);
+	wire is_ori  = (is_I_op && func3_110);
 	wire is_andi = (is_I_op && func3_111);
 	wire is_slli = (is_I_op && func3_001 && func7_0);
 	wire is_srli = (is_I_op && func3_101 && func7_0);
@@ -114,7 +115,7 @@ module ysyx_25040101_ctrl_unit(
 
 	/* I_jalr */
 	wire is_jalr = is_I_jalr;
-	// slti, ori, ecall
+	// slti, ecall
 
 	/* S */
 	wire is_sw = (is_S && func3_010);
@@ -149,7 +150,7 @@ module ysyx_25040101_ctrl_unit(
 	assign alu_ctrl_o[3] = (is_srli || is_srl);	// unsigned sra >>> srcb
 	assign alu_ctrl_o[4] = (is_slli || is_sll); // srca << srcb
 	assign alu_ctrl_o[5] = (is_andi || is_and);	// srca & srcb
-	assign alu_ctrl_o[6] = is_or;		// srca | srcb
+	assign alu_ctrl_o[6] = (is_or || is_ori);		// srca | srcb
 	assign alu_ctrl_o[7] = (is_xor || is_xori);	// srca ^ srcb
 
 	/* to mux_srca (default = rs1_data) */
@@ -159,7 +160,7 @@ module ysyx_25040101_ctrl_unit(
 	/* to mux_srcb (default = rs2_data) */
 	assign srcb_ctrl_o[0] = (is_addi || is_auipc || is_lui || is_lw || is_sw || is_sltiu 
 													|| is_srai || is_andi || is_srli || is_slli || is_lbu || is_lh
-													|| is_lhu || is_xori || is_sb || is_sh);	// is imm
+													|| is_lhu || is_xori || is_sb || is_sh || is_ori);	// is imm
 	assign srcb_ctrl_o[1] = (is_jal || is_jalr);							// is 4
 	assign srcb_ctrl_o[2] = (is_sll || is_sra || is_srl);	// is rs2_data[4:0]
 
@@ -176,7 +177,7 @@ module ysyx_25040101_ctrl_unit(
   assign rd_wen_o = (is_addi || is_auipc || is_lui || is_jal || is_jalr || is_lw || is_sltiu 
 										|| is_sub || is_add || is_srai || is_andi || is_srli || is_sltu || is_slli 
 										|| is_or || is_xor || is_lbu || is_lh || is_lhu || is_sll || is_xori
-										|| is_sra || is_srl || is_and);	// write enable
+										|| is_sra || is_srl || is_and || is_ori);	// write enable
 
 	/* to alu_memio_handle */
 	assign read_1B_mem_en_o = is_lbu;

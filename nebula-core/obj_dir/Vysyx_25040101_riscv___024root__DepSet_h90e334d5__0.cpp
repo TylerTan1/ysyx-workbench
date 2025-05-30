@@ -6,30 +6,30 @@
 #include "Vysyx_25040101_riscv__Syms.h"
 #include "Vysyx_25040101_riscv___024root.h"
 
-extern "C" int pmem_read(int raddr, int num_byte, svBit sext);
+extern "C" unsigned int pmem_read(unsigned int raddr, int num_byte, svBit sext);
 
 VL_INLINE_OPT void Vysyx_25040101_riscv___024root____Vdpiimwrap_ysyx_25040101_riscv__DOT__alu_memio_handle1__DOT__pmem_read_TOP(IData/*31:0*/ raddr, IData/*31:0*/ num_byte, CData/*0:0*/ sext, IData/*31:0*/ &pmem_read__Vfuncrtn) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vysyx_25040101_riscv___024root____Vdpiimwrap_ysyx_25040101_riscv__DOT__alu_memio_handle1__DOT__pmem_read_TOP\n"); );
     // Body
-    int raddr__Vcvt;
+    unsigned int raddr__Vcvt;
     for (size_t raddr__Vidx = 0; raddr__Vidx < 1; ++raddr__Vidx) raddr__Vcvt = raddr;
     int num_byte__Vcvt;
     for (size_t num_byte__Vidx = 0; num_byte__Vidx < 1; ++num_byte__Vidx) num_byte__Vcvt = num_byte;
     svBit sext__Vcvt;
     for (size_t sext__Vidx = 0; sext__Vidx < 1; ++sext__Vidx) sext__Vcvt = sext;
-    int pmem_read__Vfuncrtn__Vcvt;
+    unsigned int pmem_read__Vfuncrtn__Vcvt;
     pmem_read__Vfuncrtn__Vcvt = pmem_read(raddr__Vcvt, num_byte__Vcvt, sext__Vcvt);
     pmem_read__Vfuncrtn = pmem_read__Vfuncrtn__Vcvt;
 }
 
-extern "C" void pmem_write(int waddr, int data, int num_byte);
+extern "C" void pmem_write(unsigned int waddr, unsigned int data, int num_byte);
 
 VL_INLINE_OPT void Vysyx_25040101_riscv___024root____Vdpiimwrap_ysyx_25040101_riscv__DOT__alu_memio_handle1__DOT__pmem_write_TOP(IData/*31:0*/ waddr, IData/*31:0*/ data, IData/*31:0*/ num_byte) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vysyx_25040101_riscv___024root____Vdpiimwrap_ysyx_25040101_riscv__DOT__alu_memio_handle1__DOT__pmem_write_TOP\n"); );
     // Body
-    int waddr__Vcvt;
+    unsigned int waddr__Vcvt;
     for (size_t waddr__Vidx = 0; waddr__Vidx < 1; ++waddr__Vidx) waddr__Vcvt = waddr;
-    int data__Vcvt;
+    unsigned int data__Vcvt;
     for (size_t data__Vidx = 0; data__Vidx < 1; ++data__Vidx) data__Vcvt = data;
     int num_byte__Vcvt;
     for (size_t num_byte__Vidx = 0; num_byte__Vidx < 1; ++num_byte__Vidx) num_byte__Vcvt = num_byte;

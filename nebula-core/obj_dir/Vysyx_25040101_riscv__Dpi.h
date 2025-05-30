@@ -16,10 +16,10 @@ extern "C" {
 
 
     // DPI IMPORTS
-    // DPI import at vsrc/src/alu_memio_handle.v:18:30
-    extern int pmem_read(int raddr, int num_byte, svBit sext);
-    // DPI import at vsrc/src/alu_memio_handle.v:19:31
-    extern void pmem_write(int waddr, int data, int num_byte);
+    // DPI import at vsrc/src/alu_memio_handle.v:19:39
+    extern unsigned int pmem_read(unsigned int raddr, int num_byte, svBit sext);
+    // DPI import at vsrc/src/alu_memio_handle.v:20:31
+    extern void pmem_write(unsigned int waddr, unsigned int data, int num_byte);
 
 #ifdef __cplusplus
 }

@@ -146,6 +146,7 @@ module ysyx_25040101_riscv(
 	);
 
 	ysyx_25040101_alu_memio_handle alu_memio_handle1(
+		.clk(clk),
 		.read_1B_mem_en_i(read_1B_mem_en),
 		.read_2B_mem_en_i(read_2B_mem_en),
 		.read_2B_sext_mem_en_i(read_2B_sext_mem_en),
