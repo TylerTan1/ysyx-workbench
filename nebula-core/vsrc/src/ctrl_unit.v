@@ -23,6 +23,7 @@ module ysyx_25040101_ctrl_unit(
 	output wire 		  is_ebreak_o,
 	/* to alu_memio_handle */
 	output wire				read_1B_mem_en_o,
+	output wire 			read_1B_sext_mem_en_o,
 	output wire				read_2B_mem_en_o,
 	output wire				read_2B_sext_mem_en_o,
 	output wire				read_4B_mem_en_o,
@@ -31,6 +32,7 @@ module ysyx_25040101_ctrl_unit(
 	output wire				write_4B_mem_en_o,
 	/* to alu_result_handle */
 	output wire				rd_unsigned_less_ctrl_o,
+	output wire 			rd_less_ctrl_o,
 	output wire				less_ctrl_o,
 	output wire 			less_unsigned_ctrl_o,
 	output wire 			nless_ctrl_o,
@@ -83,7 +85,7 @@ module ysyx_25040101_ctrl_unit(
 	
 	/* R */
 	wire is_add = (is_R && func3_000 && func7_0);
-	wire is_or = (is_R && func3_110 && func7_0);
+	wire is_or  = (is_R && func3_110 && func7_0);
 	wire is_sub = (is_R && func3_000 && func7_1);
 	wire is_sltu = (is_R && func3_011 && func7_0);
 	wire is_xor = (is_R && func3_100 && func7_0);
@@ -91,10 +93,11 @@ module ysyx_25040101_ctrl_unit(
 	wire is_sra = (is_R && func3_101 && func7_1);
 	wire is_srl = (is_R && func3_101 && func7_0);
 	wire is_and = (is_R && func3_111 && func7_0);
-	// slt
+	wire is_slt = (is_R && func3_010 && func7_0);
 
 	/* I_op */
 	wire is_addi = (is_I_op && func3_000);
+	wire is_slti = (is_I_op && func3_010);
 	wire is_sltiu = (is_I_op && func3_011);
 	wire is_xori = (is_I_op && func3_100);
 	wire is_ori  = (is_I_op && func3_110);
@@ -108,14 +111,14 @@ module ysyx_25040101_ctrl_unit(
 	wire is_lbu = (is_I_load && func3_100);
 	wire is_lhu = (is_I_load && func3_101);
 	wire is_lh = (is_I_load && func3_001);
-	// lb
+	wire is_lb = (is_I_load && func3_000);
 	
 	/* I_system */
 	assign is_ebreak_o = (is_I_system && func3_000 && func7_0);
 
 	/* I_jalr */
 	wire is_jalr = is_I_jalr;
-	// slti, ecall
+	// ecall
 
 	/* S */
 	wire is_sw = (is_S && func3_010);
@@ -143,9 +146,11 @@ module ysyx_25040101_ctrl_unit(
 
 	/* to alu */
 	assign alu_ctrl_o[0] = (is_addi || is_jal || is_auipc || is_jalr || is_lui || is_lw 
-												 || is_sw || is_add || is_lbu || is_lh || is_lhu || is_sb || is_sh);	// srca + srcb
+												 || is_sw || is_add || is_lbu || is_lh || is_lhu || is_sb || is_sh || is_lb);	// srca + srcb
+
 	assign alu_ctrl_o[1] = (is_sltiu || is_bne || is_sub || is_beq || is_bge || is_blt 
-												 || is_sltu || is_bltu || is_bgeu);	// srca - srcb
+												 || is_sltu || is_bltu || is_bgeu || is_slt || is_slti);	// srca - srcb
+
 	assign alu_ctrl_o[2] = (is_srai || is_sra); // signed srca >>> srcb
 	assign alu_ctrl_o[3] = (is_srli || is_srl);	// unsigned sra >>> srcb
 	assign alu_ctrl_o[4] = (is_slli || is_sll); // srca << srcb
@@ -160,7 +165,8 @@ module ysyx_25040101_ctrl_unit(
 	/* to mux_srcb (default = rs2_data) */
 	assign srcb_ctrl_o[0] = (is_addi || is_auipc || is_lui || is_lw || is_sw || is_sltiu 
 													|| is_srai || is_andi || is_srli || is_slli || is_lbu || is_lh
-													|| is_lhu || is_xori || is_sb || is_sh || is_ori);	// is imm
+													|| is_lhu || is_xori || is_sb || is_sh || is_ori || is_lb
+													|| is_slti);	// is imm
 	assign srcb_ctrl_o[1] = (is_jal || is_jalr);							// is 4
 	assign srcb_ctrl_o[2] = (is_sll || is_sra || is_srl);	// is rs2_data[4:0]
 
@@ -177,10 +183,11 @@ module ysyx_25040101_ctrl_unit(
   assign rd_wen_o = (is_addi || is_auipc || is_lui || is_jal || is_jalr || is_lw || is_sltiu 
 										|| is_sub || is_add || is_srai || is_andi || is_srli || is_sltu || is_slli 
 										|| is_or || is_xor || is_lbu || is_lh || is_lhu || is_sll || is_xori
-										|| is_sra || is_srl || is_and || is_ori);	// write enable
+										|| is_sra || is_srl || is_and || is_ori || is_slt || is_lb || is_slti);	// write enable
 
 	/* to alu_memio_handle */
 	assign read_1B_mem_en_o = is_lbu;
+	assign read_1B_sext_mem_en_o = is_lb;
 	assign read_2B_mem_en_o = is_lhu;
 	assign read_2B_sext_mem_en_o = is_lh;
 	assign read_4B_mem_en_o = is_lw;
@@ -190,6 +197,7 @@ module ysyx_25040101_ctrl_unit(
 
 	/* to alu_result_handle */
 	assign rd_unsigned_less_ctrl_o = (is_sltiu || is_sltu);
+	assign rd_less_ctrl_o = (is_slt || is_slti);
 	assign less_ctrl_o = is_blt;
 	assign less_unsigned_ctrl_o = is_bltu;
 	assign nless_ctrl_o = is_bge;

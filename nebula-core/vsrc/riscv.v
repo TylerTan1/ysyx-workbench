@@ -26,6 +26,7 @@ module ysyx_25040101_riscv(
 	wire			 pc_srcb_ctrl;
 	wire 			 pc_imm_ctrl;
 	wire			 read_1B_mem_en;
+	wire 			 read_1B_sext_mem_en;
 	wire			 read_2B_mem_en;
 	wire 			 read_2B_sext_mem_en;
 	wire			 read_4B_mem_en;
@@ -33,6 +34,7 @@ module ysyx_25040101_riscv(
 	wire			 write_2B_mem_en;
 	wire			 write_4B_mem_en;
 	wire 			 rd_unsigned_less_ctrl;
+	wire 			 rd_less_ctrl;
 	wire 			 less_ctrl;
 	wire			 less_unsigned_ctrl;
 	wire 			 nless_ctrl;
@@ -101,6 +103,7 @@ module ysyx_25040101_riscv(
 		.rd_wen_o(rd_wen),
 		.is_ebreak_o(is_ebreak),
 		.read_1B_mem_en_o(read_1B_mem_en),
+		.read_1B_sext_mem_en_o(read_1B_sext_mem_en),
 		.read_2B_mem_en_o(read_2B_mem_en),
 		.read_2B_sext_mem_en_o(read_2B_sext_mem_en),
 		.read_4B_mem_en_o(read_4B_mem_en),
@@ -108,6 +111,7 @@ module ysyx_25040101_riscv(
 		.write_2B_mem_en_o(write_2B_mem_en),
 		.write_4B_mem_en_o(write_4B_mem_en),
 		.rd_unsigned_less_ctrl_o(rd_unsigned_less_ctrl),
+		.rd_less_ctrl_o(rd_less_ctrl),
 		.less_ctrl_o(less_ctrl),
 		.less_unsigned_ctrl_o(less_unsigned_ctrl),
 		.nless_ctrl_o(nless_ctrl),
@@ -148,6 +152,7 @@ module ysyx_25040101_riscv(
 	ysyx_25040101_alu_memio_handle alu_memio_handle1(
 		.clk(clk),
 		.read_1B_mem_en_i(read_1B_mem_en),
+		.read_1B_sext_mem_en_i(read_1B_sext_mem_en),
 		.read_2B_mem_en_i(read_2B_mem_en),
 		.read_2B_sext_mem_en_i(read_2B_sext_mem_en),
 		.read_4B_mem_en_i(read_4B_mem_en),
@@ -164,6 +169,7 @@ module ysyx_25040101_riscv(
 		.sub_overflow_i(sub_overflow),
 		.tmp_rd_data_i(tmp_rd_data),
 		.rd_unsigned_less_ctrl_i(rd_unsigned_less_ctrl),
+		.rd_less_ctrl_i(rd_less_ctrl),
 		.less_ctrl_i(less_ctrl),
 		.less_unsigned_ctrl_i(less_unsigned_ctrl),
 		.nless_ctrl_i(nless_ctrl),

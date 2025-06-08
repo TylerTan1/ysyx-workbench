@@ -29,6 +29,16 @@ module ysyx_25040101_alu(
 	wire[31:0] result_bit_or = srca_data_i | srcb_data_i;
 	wire[31:0] result_bit_xor = srca_data_i ^ srcb_data_i;
 
+	assign alu_result_o = 
+    ({32{alu_ctrl_i[0]}} & result_add_sub)       |  // 00000001
+    ({32{alu_ctrl_i[1]}} & result_add_sub)       |  // 00000010
+    ({32{alu_ctrl_i[2]}} & result_sright_shift)  |  // 00000100
+    ({32{alu_ctrl_i[3]}} & result_uright_shift)  |  // 00001000
+    ({32{alu_ctrl_i[4]}} & result_left_shift)    |  // 00010000
+    ({32{alu_ctrl_i[5]}} & result_bit_and)       |  // 00100000
+    ({32{alu_ctrl_i[6]}} & result_bit_or)        |  // 01000000
+    ({32{alu_ctrl_i[7]}} & result_bit_xor);         // 10000000
+
 	/* TODO optimize */
 	mux #(
 		.NR_KEY(8),

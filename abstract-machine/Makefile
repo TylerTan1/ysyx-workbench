@@ -5,9 +5,12 @@ html:
 	cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
 .PHONY: html
 
+# 首先程序会传递NAME和SRCS的值，make命令会传递ARCH和mainargs的值
+
 ## 1. Basic Setup and Checks
 
 ### Default to create a bare-metal kernel image
+# T: MAKECMDGOALS = make之后的参数, 如 "make a", 那么 MAKECCMDGOALS = a
 ifeq ($(MAKECMDGOALS),)
   MAKECMDGOALS  = image
   .DEFAULT_GOAL = image
@@ -30,6 +33,7 @@ ifeq ($(filter $(ARCHS), $(ARCH)), )
   $(error Expected $$ARCH in {$(ARCHS)}, Got "$(ARCH)")
 endif
 
+# 这里通过ARCH定义了ISA和PLATFORM
 ### Extract instruction set architecture (`ISA`) and platform from `$ARCH`. Example: `ARCH=x86_64-qemu -> ISA=x86_64; PLATFORM=qemu`
 ARCH_SPLIT = $(subst -, ,$(ARCH))
 ISA        = $(word 1,$(ARCH_SPLIT))
@@ -53,13 +57,14 @@ $(shell mkdir -p $(DST_DIR))
 ### Compilation targets (a binary image or archive)
 IMAGE_REL = build/$(NAME)-$(ARCH)
 IMAGE     = $(abspath $(IMAGE_REL))
-ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a
+ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a		
 
+# 这里定义了OBJS和LIBS的路径，并且汇归到LINKAGE
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
 LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recursions
 LINKAGE   = $(OBJS) \
-  $(addsuffix -$(ARCH).a, $(join \
+	$(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
     $(LIBS) ))
 
@@ -75,11 +80,13 @@ OBJDUMP   = $(CROSS_COMPILE)objdump
 OBJCOPY   = $(CROSS_COMPILE)objcopy
 READELF   = $(CROSS_COMPILE)readelf
 
+# 这里定义了-I的flag
 ### Compilation flags
 INC_PATH += $(WORK_DIR)/include $(addsuffix /include/, $(addprefix $(AM_HOME)/, $(LIBS)))
 INCFLAGS += $(addprefix -I, $(INC_PATH))
 
 ARCH_H := arch/$(ARCH).h
+# 下面的-D就是定义宏，如-DA=1，等于在C语言内加上#define A 1
 CFLAGS   += -O2 -MMD -Wall -Werror $(INCFLAGS) \
             -D__ISA__=\"$(ISA)\" -D__ISA_$(shell echo $(ISA) | tr a-z A-Z)__ \
             -D__ARCH__=$(ARCH) -D__ARCH_$(shell echo $(ARCH) | tr a-z A-Z | tr - _) \
@@ -94,6 +101,7 @@ LDFLAGS  += -z noexecstack $(addprefix -T, $(LDSCRIPTS))
 ## 4. Arch-Specific Configurations
 
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
+# 这里加入了对应架构的markdown
 -include $(AM_HOME)/scripts/$(ARCH).mk
 
 ## 5. Compilation Rules
@@ -103,6 +111,7 @@ $(DST_DIR)/%.o: %.c
 	@mkdir -p $(dir $@) && echo + CC $<
 	@$(CC) -std=gnu11 $(CFLAGS) -c -o $@ $(realpath $<)
 
+# .cc文件也是c++文件的扩展名，本质上和.cpp没有区别
 ### Rule (compile): a single `.cc` -> `.o` (g++)
 $(DST_DIR)/%.o: %.cc
 	@mkdir -p $(dir $@) && echo + CXX $<
@@ -113,12 +122,16 @@ $(DST_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@) && echo + CXX $<
 	@$(CXX) -std=c++17 $(CXXFLAGS) -c -o $@ $(realpath $<)
 
+# .S为汇编语言代码文件
 ### Rule (compile): a single `.S` -> `.o` (gcc, which preprocesses and calls as)
 $(DST_DIR)/%.o: %.S
 	@mkdir -p $(dir $@) && echo + AS $<
 	@$(AS) $(ASFLAGS) -c -o $@ $(realpath $<)
 
 ### Rule (recursive make): build a dependent library (am, klib, ...)
+# 这里编译静态库
+# %是通配符，匹配任意文件名，-s代表静默模式，-C是指定make在何工作目录下执行
+# $*是自动变量，表示匹配模式规则中的通配符部分
 $(LIBS): %:
 	@$(MAKE) -s -C $(AM_HOME)/$* archive
 
@@ -129,6 +142,7 @@ $(IMAGE).elf: $(LINKAGE) $(LDSCRIPTS)
 ifneq ($(filter $(ARCH),native),)
 	@$(CXX) -o $@ -Wl,--whole-archive $(LINKAGE) -Wl,-no-whole-archive $(LDFLAGS_CXX)
 else
+# 如果架构是native，则执行这个
 	@$(LD) $(LDFLAGS) -o $@ --start-group $(LINKAGE) --end-group
 endif
 

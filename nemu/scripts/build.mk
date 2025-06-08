@@ -22,6 +22,10 @@ CXX := g++
 endif
 LD := $(CXX)
 INCLUDES = $(addprefix -I, $(INC_PATH))
+
+# SDL_CFLAGS := $(shell sdl2-config --cflags)
+# SDL_LDFLAGS := $(shell sdl2-config --libs)
+
 CFLAGS  := -O2 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS)
 LDFLAGS := -O2 $(LDFLAGS)
 

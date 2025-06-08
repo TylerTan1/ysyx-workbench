@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+// 倘若__NATIVE_USE_KLIB__没有定义，那么在klib/src内都不会定义，故会使用标准C库，即glibc
 // #define __NATIVE_USE_KLIB__
 
 // string.h

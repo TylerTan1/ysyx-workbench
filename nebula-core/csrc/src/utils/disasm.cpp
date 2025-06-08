@@ -37,8 +37,13 @@ void utils::init_disasm() {
 
 std::string disasm(SimulationContext& ctx) {
 	cs_insn *insn;
-	size_t count = csdisasm(handle, (uint8_t *)&ctx.dut->inst, 8, ctx.dut->pc, 0, &insn);
-	assert(count == 1);
+	size_t count = csdisasm(handle, (uint8_t *)&ctx.dut->inst, 4, ctx.dut->pc, 0, &insn);
+	if (count != 1) {
+		printf("count = %li\n", count);
+		printf("inst  = 0x%08x\n", ctx.dut->inst);
+		printf("pc    = 0x%08x\n", ctx.dut->pc);
+		assert(0);
+	}
 
 	std::ostringstream oss;
 	oss << "0x" << std::hex << std::setw(8) << std::setfill('0') << insn[0].address

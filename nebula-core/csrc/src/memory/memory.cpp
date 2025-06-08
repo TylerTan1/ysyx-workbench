@@ -1,7 +1,8 @@
-#include <memory.h>
-#include <generated/autoconf.h>
+#include <memory.h> #include <generated/autoconf.h>
 
 #include <fstream>
+#include <chrono>
+#include <ctime>
 
 uint8_t *rom = NULL;			
 
@@ -81,6 +82,33 @@ extern "C" word_t pmem_read(word_t raddr, int num_byte, bool sext) {
 #ifdef CONFIG_MTRACE_READ
 	printf("read memory %d bytes from address 0x%x", num_byte, raddr);
 #endif
+	/* timer */
+	static auto start_time = std::chrono::high_resolution_clock::now();
+	if (raddr == 0xa0000048) {
+		auto current_time = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(current_time - start_time).count();
+		uint64_t time_diff = static_cast<uint64_t>(duration);
+		word_t data = static_cast<uint32_t>(time_diff & 0xffffffff);
+		last_data = data;
+		have_read = true;
+#ifdef  CONFIG_MTRACE_READ
+		printf(" = 0x%x\n", data);
+#endif 
+		return data;
+	}
+	if (raddr == 0xa000004c) {
+		auto current_time = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(current_time - start_time).count();
+		uint64_t time_diff = static_cast<uint64_t>(duration);
+		word_t data = static_cast<uint32_t>(time_diff >> 32);
+		last_data = data;
+		have_read = true;
+#ifdef  CONFIG_MTRACE_READ
+		printf(" = 0x%x\n", data);
+#endif 
+		return data;
+	}
+
 	assert(num_byte <= 4 || num_byte > 0);
 	word_t paddr = guest_to_host(raddr);
 
@@ -104,6 +132,11 @@ extern "C" void pmem_write(word_t waddr, word_t data, int num_byte) {
 #ifdef CONFIG_MTRACE_WRITE
 	printf("write 0x%x into memory 0x%x\n", data, waddr);
 #endif
+	/* serial */
+	if (waddr == 0xa00003f8) { 
+		putchar(data);
+		return;
+	}
 	assert(num_byte <= 4 || num_byte > 0);
 	word_t paddr = guest_to_host(waddr);
 	for (int i = 0; i < num_byte; i++) {

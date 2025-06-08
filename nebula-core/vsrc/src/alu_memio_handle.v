@@ -2,6 +2,7 @@ module ysyx_25040101_alu_memio_handle (
 	input wire clk,
 	/* from ctrl_unit */
 	input wire read_1B_mem_en_i,
+	input wire read_1B_sext_mem_en_i,
 	input wire read_2B_mem_en_i,
 	input wire read_2B_sext_mem_en_i,
 	input wire read_4B_mem_en_i,
@@ -21,16 +22,18 @@ module ysyx_25040101_alu_memio_handle (
 
 	always @(*) begin
 		if (read_1B_mem_en_i) begin
-				tmp_rd_data_o = pmem_read(alu_result_i, 1, 1'b0); 
-			end else if (read_2B_mem_en_i) begin
-				tmp_rd_data_o = pmem_read(alu_result_i, 2, 1'b0);
-			end else if (read_2B_sext_mem_en_i) begin
-				tmp_rd_data_o = pmem_read(alu_result_i, 2, 1'b1);
-			end else if (read_4B_mem_en_i) begin
-				tmp_rd_data_o = pmem_read(alu_result_i, 4, 1'b0);
-			end else begin
-				tmp_rd_data_o = alu_result_i;
-			end
+			tmp_rd_data_o = pmem_read(alu_result_i, 1, 1'b0); 
+		end else if (read_1B_sext_mem_en_i) begin
+			tmp_rd_data_o = pmem_read(alu_result_i, 1, 1'b1);
+		end else if (read_2B_mem_en_i) begin
+			tmp_rd_data_o = pmem_read(alu_result_i, 2, 1'b0);
+		end else if (read_2B_sext_mem_en_i) begin
+			tmp_rd_data_o = pmem_read(alu_result_i, 2, 1'b1);
+		end else if (read_4B_mem_en_i) begin
+			tmp_rd_data_o = pmem_read(alu_result_i, 4, 1'b0);
+		end else begin
+			tmp_rd_data_o = alu_result_i;
+		end
 	end
 
 	always @(posedge clk) begin
