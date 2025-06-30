@@ -3,6 +3,7 @@
 #include <common.h>
 
 extern const std::string registers[32]; 
+extern bool is_device;
 
 namespace memory {
 	size_t init_rom(SimulationContext& ctx);

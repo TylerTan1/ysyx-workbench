@@ -1,5 +1,5 @@
 STUID = ysyx_25040101
-STUNAME = Tan Tianle
+STUNAME = tylertan
 
 # DO NOT modify the following code!!!
 

@@ -9,6 +9,7 @@ module ysyx_25040101_riscv(
 	output wire[31:1][31:0] regs_data,
 	output wire is_ebreak
 );
+	wire[31:0] raw_next_pc;
 	wire[31:0] next_pc;
 	wire[31:0] tmp_rd_data;
 	wire[31:0] rd_data;
@@ -20,7 +21,7 @@ module ysyx_25040101_riscv(
 	wire			 sub_overflow;
 	wire[7:0]	 alu_ctrl;
 	wire[1:0]	 srca_ctrl;
-	wire[2:0]	 srcb_ctrl;
+	wire[4:0]	 srcb_ctrl;
 	wire			 pc_ctrl;
 	wire			 pc_srca_ctrl;
 	wire			 pc_srcb_ctrl;
@@ -41,6 +42,14 @@ module ysyx_25040101_riscv(
 	wire			 nless_unsigned_ctrl;
 	wire			 ieq_ctrl;
 	wire 			 eq_ctrl;
+	wire			 is_ecall;
+	wire 			 is_mret;
+	wire			 csr_wen;
+	wire			 csr_ctrl;
+	wire[31:0] csr_wdata;
+  wire[31:0] csr_data;	
+	wire[31:0] mtvec;
+	wire[31:0] mepc;
 	wire[31:0] pc_srca;
 	wire[31:0] pc_srcb;
 	wire[5:0]  imm_type;
@@ -73,7 +82,7 @@ module ysyx_25040101_riscv(
 		.pc_srca_i(pc_srca),
 		.pc_srcb_i(pc_srcb),
 		.pc_ctrl_i(pc_ctrl),
-		.next_pc_o(next_pc)
+		.raw_next_pc_o(raw_next_pc)
 	);
 	
 	ysyx_25040101_regs regs1(
@@ -90,9 +99,7 @@ module ysyx_25040101_riscv(
 	);
 
 	ysyx_25040101_ctrl_unit ctrl_unit1(
-		.opcode_i(inst[6:0]),
-		.func3_i(inst[14:12]),
-		.func7_i(inst[30]),
+		.inst_i(inst),
 		.alu_ctrl_o(alu_ctrl),
 		.srca_ctrl_o(srca_ctrl),
 		.srcb_ctrl_o(srcb_ctrl),
@@ -117,7 +124,11 @@ module ysyx_25040101_riscv(
 		.nless_ctrl_o(nless_ctrl),
 		.nless_unsigned_ctrl_o(nless_unsigned_ctrl),
 		.ieq_ctrl_o(ieq_ctrl),
-		.eq_ctrl_o(eq_ctrl)
+		.eq_ctrl_o(eq_ctrl),
+		.is_ecall_o(is_ecall),
+		.is_mret_o(is_mret),
+		.csr_wen_o(csr_wen),
+		.csr_ctrl_o(csr_ctrl)
 	);
 
 	ysyx_25040101_extend extend1(
@@ -137,6 +148,7 @@ module ysyx_25040101_riscv(
 		.srcb_ctrl_i(srcb_ctrl),
 		.rs2_data_i(rs2_data),
 		.imm_i(imm),
+		.csr_data_i(csr_data),
 		.srcb_data_o(srcb_data)
 	);	
 
@@ -177,7 +189,31 @@ module ysyx_25040101_riscv(
 		.ieq_ctrl_i(ieq_ctrl),
 		.eq_ctrl_i(eq_ctrl),
 		.rd_data_o(rd_data),
-		.pc_imm_ctrl_o(pc_imm_ctrl)
+		.pc_imm_ctrl_o(pc_imm_ctrl),
+		.csr_ctrl_i(csr_ctrl),
+		.csr_data_i(csr_data),
+		.csr_wdata_o(csr_wdata)
 	);
 
+	ysyx_25040101_csr_regs csr_regs1(
+		.clk(clk),
+		.rst(rst),
+		.is_ecall_i(is_ecall),
+		.csr_wen_i(csr_wen),
+		.csr_wdata_i(csr_wdata),
+		.csr_index_i(inst[31:20]),
+ 		.pc_i(pc),
+		.csr_data_o(csr_data),
+		.mtvec(mtvec),
+		.mepc(mepc)
+	);
+
+	ysyx_25040101_next_pc_mux next_pc_mux1(
+		.raw_next_pc_i(raw_next_pc),
+		.mtvec_i(mtvec),
+		.mepc_i(mepc),
+		.is_ecall_i(is_ecall),
+		.is_mret_i(is_mret),
+		.next_pc_o(next_pc)
+	);
 endmodule

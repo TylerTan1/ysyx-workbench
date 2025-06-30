@@ -38,12 +38,15 @@ f(30) f(31)
 #define OFFSET_EPC    ((NR_REGS + 2) * XLEN)
 
 .align 3
+/* 这里说明了__am_asm_trap段的功能 */
 .globl __am_asm_trap
 __am_asm_trap:
+	/* 这里调整栈指针指向context */
   addi sp, sp, -CONTEXT_SIZE
-
+	/* 这里存了寄存器 */
   MAP(REGS, PUSH)
 
+  /* 这里存了CSR寄存器 */ 
   csrr t0, mcause
   csrr t1, mstatus
   csrr t2, mepc
@@ -57,15 +60,21 @@ __am_asm_trap:
   or t1, t1, a0
   csrw mstatus, t1
 
+	/* 这里调用了异常处理程序__am_irq_handle */
+	/* 将sp的值赋值到a0，实现备份 */
   mv a0, sp
   call __am_irq_handle
+	/* 这里恢复栈指针，但是a0的值是__am_irq_handle函数的返回值，所以这里可能已经切换了进程
+	mv sp, a0
 
+	/* 恢复CSR寄存器和其他寄存器 */
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
   csrw mstatus, t1
   csrw mepc, t2
 
   MAP(REGS, POP)
-
+	/* 恢复栈指针 */
   addi sp, sp, CONTEXT_SIZE
+	/* mret指令会把mepc的值加载到pc */
   mret

@@ -108,15 +108,17 @@ void monitor::mainloop(SimulationContext& ctx) {
 	
 	std::string input;
 	std::cout << CYAN << "(nebula) " << RESET_COLOR;
+	std::string cmd, args;
 	while (std::getline(std::cin, input)) {
-		std::istringstream iss(input);
-		std::string cmd, args;
-		/* get command */
-		iss >> cmd;
-		/* get arguments */
-		std::getline(iss, args);
-		/* erase spaces */
-		args.erase(0, args.find_first_not_of(' '));
+		if (!input.empty()) {
+			std::istringstream iss(input);
+			/* get command */
+			iss >> cmd;
+			/* get arguments */
+			std::getline(iss, args);
+			/* erase spaces */
+			args.erase(0, args.find_first_not_of(' '));
+		}
 		
 		/* find and execute command */
 		auto it = cmd_table.find(cmd);

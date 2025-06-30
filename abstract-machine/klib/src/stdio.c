@@ -23,13 +23,24 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         width = width * 10 + (*fmt - '0');
         fmt++;
       }
+			
+			bool is_long = false;
+			if (*fmt == 'l') {
+				is_long = true;
+				fmt++;
+			}
 
 			switch (*fmt) {
 				case 'd': case 'i':
-					int d = va_arg(ap, int);
+					long d;
+					if (is_long) {
+						d = va_arg(ap, long);
+					} else {
+						d = va_arg(ap, int);
+					}
 					if (d < 0) {
 						*out++ = '-';
-					 	d = (unsigned int)(-(long)d);
+					 	d = (unsigned long int)(-(long)d);
 						width--;
 					}
 
@@ -48,7 +59,12 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 					break;
 
 				case 'u':
-					unsigned int u = va_arg(ap, unsigned int);
+					unsigned long int u;
+					if (is_long) {
+						u = va_arg(ap, unsigned long int);
+					} else {
+						u = va_arg(ap, unsigned int);
+					}
 
 					char ubuffer[32];
 					int ulen = 0;
@@ -65,7 +81,12 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 					break;
 
 				case 'x':
-					unsigned int x = va_arg(ap, unsigned int);
+					unsigned long int x;
+					if (is_long) {
+						x = va_arg(ap, unsigned long int);
+					} else {
+						x = va_arg(ap, unsigned int);
+					}
 					char xbuffer[32];
 					int xlen = 0;
 

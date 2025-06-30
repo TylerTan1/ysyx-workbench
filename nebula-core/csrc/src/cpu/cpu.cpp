@@ -67,12 +67,12 @@ int cpu::execute(uint32_t steps, SimulationContext& ctx) {
 		exe_once(ctx);
 
 #ifdef CONFIG_DIFFTEST
-		if (difftest_step(ctx) != 0) return -1; 
 		if (ctx.dut->is_ebreak) {
 			std::cout << GREEN << "Pass Difftest!" << RESET_COLOR << std::endl;
 			print_info(ctx);
 			return -1;
 		}
+		if (difftest_step(ctx) != 0) return -1; 
 #else
 		if (ctx.dut->is_ebreak) {
 			print_info(ctx);

@@ -28,6 +28,7 @@ typedef struct {
     EVENT_IRQ_TIMER, EVENT_IRQ_IODEV,
   } event;
   uintptr_t cause, ref;
+	/* msg是事件信息字符串 */
   const char *msg;
 } Event;
 

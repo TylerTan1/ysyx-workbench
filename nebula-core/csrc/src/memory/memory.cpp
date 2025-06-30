@@ -1,4 +1,5 @@
-#include <memory.h> #include <generated/autoconf.h>
+#include <memory.h> 
+#include <generated/autoconf.h>
 
 #include <fstream>
 #include <chrono>
@@ -77,6 +78,8 @@ word_t memory::read(word_t address, SimulationContext& ctx) {
 	return inst;
 }
 
+bool is_device = false;
+
 extern "C" word_t pmem_read(word_t raddr, int num_byte, bool sext) {
 	if (have_read) return last_data;
 #ifdef CONFIG_MTRACE_READ
@@ -85,6 +88,7 @@ extern "C" word_t pmem_read(word_t raddr, int num_byte, bool sext) {
 	/* timer */
 	static auto start_time = std::chrono::high_resolution_clock::now();
 	if (raddr == 0xa0000048) {
+		is_device = true;
 		auto current_time = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(current_time - start_time).count();
 		uint64_t time_diff = static_cast<uint64_t>(duration);
@@ -97,6 +101,7 @@ extern "C" word_t pmem_read(word_t raddr, int num_byte, bool sext) {
 		return data;
 	}
 	if (raddr == 0xa000004c) {
+		is_device = true;
 		auto current_time = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(current_time - start_time).count();
 		uint64_t time_diff = static_cast<uint64_t>(duration);
@@ -134,7 +139,9 @@ extern "C" void pmem_write(word_t waddr, word_t data, int num_byte) {
 #endif
 	/* serial */
 	if (waddr == 0xa00003f8) { 
+		is_device = true;
 		putchar(data);
+		fflush(stdout);
 		return;
 	}
 	assert(num_byte <= 4 || num_byte > 0);

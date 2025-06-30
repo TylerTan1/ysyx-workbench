@@ -42,13 +42,17 @@ void cpu::init_difftest(SimulationContext& ctx, char *ref_so_file, long img_size
   ref_difftest_init();
 
 	uint8_t *rom_ptr = (uint8_t *)ctx.rom.data();
+	// 赋值内存
   ref_difftest_memcpy(0x80000000, rom_ptr, img_size, DIFFTEST_TO_REF);
 
+	// 这里把reg初始化为npc里寄存器的数据
 	word_t regs[32];
 	regs[0] = ctx.dut->pc;
+	// printf("ctx.dut->pc = 0x%x\n", ctx.dut->pc);
 	for (int i = 0; i < 31; i++) {
 		regs[i+1] = ctx.dut->regs_data[i];
 	}
+	// 赋值寄存器
   ref_difftest_regcpy(regs, DIFFTEST_TO_REF);
 }
 
@@ -59,6 +63,7 @@ static int checkregs(SimulationContext& ctx, uint32_t* regs) {
 		dif[0] = true;
 		ret = -1;
 	}
+
 	for (int i = 0; i < 31; i++) {
 		if (ctx.dut->regs_data[i] != regs[i + 1]) {
 			dif[i + 1] = true;
@@ -95,11 +100,22 @@ static int checkregs(SimulationContext& ctx, uint32_t* regs) {
 }
 
 int difftest_step(SimulationContext& ctx) {
-	uint32_t regs[32];
-	ref_difftest_exec(1);
-	ref_difftest_regcpy(regs, DIFFTEST_TO_REF);
-
-	return checkregs(ctx, regs);	
+	if (is_device) {
+ 		is_device = false;
+		word_t regs[32];
+		regs[0] = ctx.dut->pc;
+		for (int i = 0; i < 31; i++) {
+			regs[i+1] = ctx.dut->regs_data[i];
+		}
+  	ref_difftest_regcpy(regs, DIFFTEST_TO_REF);
+		return 0;
+	} else {
+		uint32_t regs[32];
+		ref_difftest_exec(1);
+		// 将ref的寄存器赋值到regs数组
+		ref_difftest_regcpy(regs, DIFFTEST_TO_DUT);
+		return checkregs(ctx, regs);	
+	}
 }
 #else
 void cpu::init_difftest(SimulationContext& ctx, char *ref_so_file, long img_size) { return; };

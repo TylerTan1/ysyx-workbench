@@ -21,24 +21,36 @@
 void paddr_write(paddr_t addr, int len, word_t data);
 
 __EXPORT void difftest_memcpy(paddr_t addr, uint8_t *buf, size_t n, bool direction) {
-	if (direction == DIFFTEST_TO_DUT) assert(0);		
-	uint8_t *ptr = buf;
-	for (int i = 0; i < n; i++) {
-		paddr_write(addr, 1, *ptr);
-		addr++;
-		ptr++;
-	}
+	if (direction == DIFFTEST_TO_REF) {		
+		// printf("in memcpy\n");
+		uint8_t *ptr = buf;
+		for (int i = 0; i < n; i++) {
+			// printf("addr = 0x%x\n", addr);
+			paddr_write(addr, 1, *ptr);
+			addr++;
+			ptr++;
+		}
+	} else assert(0);
 }
 
 __EXPORT void difftest_regcpy(uint32_t *dut, bool direction) {
-	if (direction == DIFFTEST_TO_DUT) assert(0);
-	dut[0] = cpu.pc;
-	for (int i = 1; i < 32; i++) {
-		dut[i] = cpu.gpr[i];
+	if (direction == DIFFTEST_TO_DUT) {
+		dut[0] = cpu.pc;
+		for (int i = 1; i < 32; i++) {
+			dut[i] = cpu.gpr[i];
+		}
+	} else if (direction == DIFFTEST_TO_REF) {
+		cpu.pc = dut[0];
+		// printf("pc = 0x%x\n", cpu.pc);
+		for (int i = 1; i < 32; i++) {
+			cpu.gpr[i] = dut[i];
+		}
 	}
 }
 
 __EXPORT void difftest_exec(uint64_t n) {
+	// printf("execute %li\n", n);
+	// printf("difftest_exec: pc = 0x%x\n", cpu.pc);
 	void cpu_exec(uint64_t n);
 	cpu_exec(n);
 }

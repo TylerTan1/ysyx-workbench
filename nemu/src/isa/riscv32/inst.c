@@ -53,6 +53,22 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
   }
 }
 
+static word_t* csr(word_t imm) {
+	word_t* ret;
+	switch (imm) {
+		case 0x300: ret = &cpu.mstatus; break;
+		case 0x305: ret = &cpu.mtvec;   break;
+		case 0x341: ret = &cpu.mepc;    break;
+		case 0x342: ret = &cpu.mcause;  break;
+		default:
+			printf("csr address = %u\n, which does not exist\n", imm);
+			assert(0);
+	}
+	return ret;
+}
+
+#define CSR(i) *csr(i)
+
 static int decode_exec(Decode *s) {
   s->dnpc = s->snpc;
 
@@ -112,6 +128,10 @@ static int decode_exec(Decode *s) {
 	INSTPAT("??????? ????? ????? 110 ????? 11000 11", bltu   , B, s->dnpc = (src1 < src2) ? (s->pc + imm) : s->dnpc);
 	INSTPAT("??????? ????? ????? 001 ????? 11000 11", bne    , B, s->dnpc = (src1 != src2) ? (s->pc + imm) : s->dnpc);
 
+	INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(ECALL, s->pc));
+	INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, R(rd) = CSR(imm); CSR(imm) |= src1);
+	INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw	 , I, R(rd) = CSR(imm); CSR(imm)  = src1);
+	INSTPAT("0011000 00010 00000 000 00000 11100 11", mret	 , R, s->dnpc = isa_ret_intr());
 	INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10)));
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
   INSTPAT_END();

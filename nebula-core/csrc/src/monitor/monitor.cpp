@@ -62,13 +62,13 @@ void monitor::initialize(int argc, char *argv[], SimulationContext& ctx) {
 	utils::init_log();
 #endif
 
+	/* send reset signal */
+	cpu::reset(ctx);
+
 	/* initialize difftest */
 #ifdef CONFIG_DIFFTEST
 	cpu::init_difftest(ctx, diff_so_file, img_size);
 #endif
-
-	/* send reset signal */
-	cpu::reset(ctx);
 
 	/* output welcome message */
 	welcome();

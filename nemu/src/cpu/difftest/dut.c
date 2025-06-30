@@ -60,6 +60,8 @@ void difftest_skip_dut(int nr_ref, int nr_dut) {
 }
 
 void init_difftest(char *ref_so_file, long img_size, int port) {
+	// 这里初始化mstatus寄存器是为了支持difftest
+	cpu.mstatus = 0x1800;
   assert(ref_so_file != NULL);
 
   void *handle;

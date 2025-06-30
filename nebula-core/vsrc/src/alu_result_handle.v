@@ -10,8 +10,12 @@ module ysyx_25040101_alu_result_handle(
 	input wire				nless_unsigned_ctrl_i,
 	input wire				ieq_ctrl_i,
 	input wire				eq_ctrl_i,
+	input wire[31:0]	csr_data_i,
+	input wire				csr_ctrl_i,
+
 	output reg			 	pc_imm_ctrl_o,
-	output reg[31:0]  rd_data_o
+	output reg[31:0]  rd_data_o,
+	output reg[31:0]	csr_wdata_o
 );
 	wire is_zero = ~(|tmp_rd_data_i);
 	wire is_unsigned_less = borrow_i;
@@ -31,11 +35,16 @@ module ysyx_25040101_alu_result_handle(
 
 	always @(*) begin
   	rd_data_o = tmp_rd_data_i;
+		csr_wdata_o = 32'b0;
   	// RD数据选择（互斥条件）
   	if (rd_unsigned_less_ctrl_i) begin
     	rd_data_o = {31'b0, is_unsigned_less};
   	end else if (rd_less_ctrl_i) begin
     	rd_data_o = {31'b0, is_signed_less};
+		// 处理csrrs和csrrw指令
+		end else if (csr_ctrl_i) begin
+			rd_data_o = csr_data_i; 	
+			csr_wdata_o = tmp_rd_data_i;
   	end
 	end
 endmodule

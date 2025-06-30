@@ -54,24 +54,20 @@ static int cmd_q(char *args) {
   return -1;
 }
 
-static int cmd_si(char *args) {
+static int cmd_s(char *args) {
 	int step_count = 1;
 	if (args != NULL) 
 		if (sscanf(args, "%d", &step_count) != 1) {
-			printf("Usage: si [N]\n");
+			printf("Usage: s [N]\n");
 			return 0;
 		}
 	cpu_exec(step_count);
 	return 0;
 }
 
-static void print_usage_info(void) {
-	printf("Usage: \"info r\" to print register\n       \"info w\" to print watchpoint\n"); 
-}
-
-static int cmd_info(char *args) {
+static int cmd_i(char *args) {
 	if (args == NULL) {
-		print_usage_info();
+		printf("Usage: \"i r\" to print register\n       \"i w\" to print watchpoint\n"); 
 		return 0;
 	}
 	char *arg = strtok(args, " ");
@@ -79,17 +75,13 @@ static int cmd_info(char *args) {
 		isa_reg_display();
 	} else if (strcmp(arg, "w") == 0) {
 		display_wp();
-	} else print_usage_info();
+	} else printf("Usage: \"i r\" to print register\n       \"i w\" to print watchpoint\n"); 
 	return 0;	
-}
-
-static void print_usage_x(void) {
-	printf("Usage: x N address\n");
 }
 
 static int cmd_x(char *args) {
 	if (args == NULL) {
-		print_usage_x();
+		printf("Usage: x N address\n");
 		return 0;
 	}
 	unsigned int step_count;
@@ -102,7 +94,7 @@ static int cmd_x(char *args) {
 			printf("0x%08x\n", data);			
 		}
 	} else {
-		print_usage_x();
+		printf("Usage: x N address\n");
 	}
 	return 0;
 }
@@ -165,8 +157,8 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-	{ "si", "Execute N steps instructions (default N = 1)", cmd_si },
-	{ "info", "Print program status(register/watchpoint)", cmd_info },
+	{ "s", "Execute N steps instructions (default N = 1)", cmd_s },
+	{ "i", "Print program status (register/watchpoint)", cmd_i },
 	{ "x", "Scan memory and outputs consecutive N 4 bytes in hexadecimal", cmd_x },
 	{ "p", "Evaluate expression", cmd_p },
 	{ "w", "Set watchpoint", cmd_w },
