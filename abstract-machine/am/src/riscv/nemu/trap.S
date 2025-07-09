@@ -46,7 +46,7 @@ __am_asm_trap:
 	# 这里存了寄存器 
   MAP(REGS, PUSH)
 
-  # 这里存了CSR寄存器  
+  # 这里存了CSR寄存器
   csrr t0, mcause
   csrr t1, mstatus
   csrr t2, mepc

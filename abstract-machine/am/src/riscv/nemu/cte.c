@@ -48,7 +48,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   return cp;
 }
 
-// 这个函数用来触发自陷，然后就会进入异常处理函数，即cte_init的参数，由软件决定
+// 这个函数用来触发自陷，存入的a7是错误码，用来识别yield事件，然后就会进入__am_asm_trap
 void yield() {
 #ifdef __riscv_e
   asm volatile("li a5, -1; ecall");

@@ -1,7 +1,7 @@
 module ysyx_25040101_mux_pc_srca(
-	input wire[31:0] pc_i,
-	input wire[31:0] rs1_data_i,
-	input wire			 pc_srca_ctrl_i,
+	input  wire[31:0] pc_i,
+	input  wire[31:0] rs1_data_i,
+	input  wire			  pc_srca_ctrl_i,
 	output wire[31:0] pc_srca_o
 );
 	mux #(

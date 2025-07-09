@@ -42,7 +42,6 @@ static void welcome() {
 }
 
 void monitor::initialize(int argc, char *argv[], SimulationContext& ctx) {
-
 	/* parse arguments */
 	parse_args(argc, argv, ctx);
 	
