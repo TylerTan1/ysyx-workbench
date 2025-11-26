@@ -101,7 +101,7 @@ LDFLAGS  += -z noexecstack $(addprefix -T, $(LDSCRIPTS))
 ## 4. Arch-Specific Configurations
 
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
-# 这里加入了对应架构的markdown
+# 这里加入了对应架构的makefile
 -include $(AM_HOME)/scripts/$(ARCH).mk
 
 ## 5. Compilation Rules
