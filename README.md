@@ -68,9 +68,8 @@ This repository contains my implementation of the "One Student One Chip" (一生
 ## Project Timeline
 - **February 2025**: Project initiation and environment setup
 - **March-May 2025**: RISC-V ISA implementation and basic verification
-- **June 2025**: Exception handling and process switching
-- **July 2025**: Peripheral integration and debugger development
-- **August 2025**: System integration, testing, and demonstration
+- **June 2025**: Exception handling, process switching, peripheral integration and debugger development
+- **July 2025**: System integration, testing, and demonstration
 
 ## Acknowledgments
 
@@ -83,5 +82,5 @@ This project follows the original repository's licensing terms. Please refer to 
 ---
 
 **Developer**: Tyler Tan
-**Project Duration**: February 2025 - August 2025  
+**Project Duration**: February 2025 - July 2025  
 **Institution**: YSYX Program
