@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains my implementation of the "One Student One Chip" (一生一芯) project, a comprehensive RISC-V processor design and verification framework. The project was developed from **February 2025 to July 2025** as part of the YSYX program.
+This repository contains my implementation of the "Yisheng Yixin" project, a comprehensive RISC-V processor design and verification framework. The project was developed from **February 2025 to July 2025** as part of the YSYX program.
 
 **Project Website**: https://ysyx.oscc.cc/
 
