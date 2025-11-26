@@ -10,8 +10,6 @@ This repository contains my implementation of the "One Student One Chip" (一生
 
 ## Project Structure
 
-### 🚀 Core Components
-
 #### **nebula-core** - Custom RTL-level RISC-V Processor
 - **Complete RISC-V 32I ISA implementation** in Verilog
 - **Advanced features**:
